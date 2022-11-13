@@ -1,10 +1,9 @@
 ﻿using FileToVoxCore.Utils;
+using FileToVoxCore.Vox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
-using FileToVoxCore.Vox;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
@@ -17,7 +16,6 @@ using VoxToVFXFramework.Scripts.Data;
 using VoxToVFXFramework.Scripts.Extensions;
 using VoxToVFXFramework.Scripts.Importer;
 using VoxToVFXFramework.Scripts.Jobs;
-using VoxToVFXFramework.Scripts.ScriptableObjets;
 using VoxToVFXFramework.Scripts.Singleton;
 using Plane = UnityEngine.Plane;
 
@@ -27,8 +25,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 	{
 		#region SerializeFields
 
-		[SerializeField] private VisualEffect VisualEffectItemPrefab;
-		[SerializeField] private VFXListAsset VFXListAsset;
 		[SerializeField] private bool ShowOnlyActiveChunkGizmos;
 		[SerializeField] private Transform FirstPersonTransform;
 		[SerializeField] private Transform FreeCameraTransform;
@@ -37,18 +33,9 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		#region ConstStatic
 
-		private const string VFX_BUFFER_KEY = "Buffer";
-
-		private const string MATERIAL_VFX_BUFFER_KEY = "MaterialBuffer";
-		private const string CHUNK_VFX_BUFFER_KEY = "ChunkBuffer";
-		private const string DEBUG_LOD_KEY = "DebugLod";
-		private const string EXPOSURE_WEIGHT_KEY = "ExposureWeight";
-		private const string INITIAL_BURST_COUNT_KEY = "InitialBurstCount";
-
 		private const float MIN_DIFF_ANGLE_CAMERA = 1f;
 		private const float MIN_TIMER_CHECK_CAMERA = 0.1f;
 
-		private const int MAX_CAPACITY_VFX = 5000000;
 		private const int BUFFER_COLLIDERS_SIZE = 1000;
 		public const int STEP_CAPACITY = 100000;
 
@@ -448,35 +435,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		private void RefreshRender(NativeList<VoxelVFX> voxels)
 		{
-			//mVisualEffect.visualEffectAsset = GetVisualEffectAsset(voxels.Length);
-			//mVisualEffect.Reinit();
-
-			//for (int index = 0; index < voxels.Length && index < 200; index++)
-			//{
-			//	VoxelVFX voxel = voxels[index];
-			//	Debug.Log("pos: " + voxel.DecodePosition());
-			//	Debug.Log("additional: " + voxel.DecodeAdditionalData());
-			//}
-
-			//string colorGreen = "green";
-			//string colorRed = "red";
-			//Debug.Log($"[RuntimeVoxManager] <color={(voxels.Length < MAX_CAPACITY_VFX ? colorGreen : colorRed)}> RefreshRender: {voxels.Length}</color>");
-
-			//mGraphicsBuffer?.Release();
-			//mGraphicsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, voxels.Length, Marshal.SizeOf(typeof(VoxelVFX)));
-			//mGraphicsBuffer.SetData(voxels.AsArray());
-
-			//mVisualEffect.SetInt(INITIAL_BURST_COUNT_KEY, voxels.Length);
-			//mVisualEffect.SetGraphicsBuffer(VFX_BUFFER_KEY, mGraphicsBuffer);
-			//mVisualEffect.SetGraphicsBuffer(MATERIAL_VFX_BUFFER_KEY, mPaletteBuffer);
-			//mVisualEffect.SetGraphicsBuffer(CHUNK_VFX_BUFFER_KEY, mChunkBuffer);
-			//mVisualEffect.SetFloat(EXPOSURE_WEIGHT_KEY, ExposureWeight.Value);
-			//mVisualEffect.SetBool(DEBUG_LOD_KEY, DebugLod.Value);
-
-			//mVisualEffect.Play();
-
-			//mAdditionalLightData.RequestShadowMapRendering();
-
 			Dictionary<int, List<Matrix4x4>> chunks = new Dictionary<int, List<Matrix4x4>>();
 			foreach (VoxelVFX voxel in voxels)
 			{
@@ -498,20 +456,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 			ManualRTASManager.Instance.Build(chunks);
 		}
-
-		private VisualEffectAsset GetVisualEffectAsset(int voxelCount)
-		{
-			int index = voxelCount / STEP_CAPACITY;
-			if (index > VFXListAsset.VisualEffectAssets.Count)
-			{
-				index = VFXListAsset.VisualEffectAssets.Count - 1;
-			}
-
-			VisualEffectAsset asset = VFXListAsset.VisualEffectAssets[index];
-			Debug.Log("[RuntimeVoxManager] Selected VisualEffectAsset: " + asset.name);
-			return asset;
-		}
-
 
 		private int GetPlayerCurrentChunkIndex(Vector3 position)
 		{
