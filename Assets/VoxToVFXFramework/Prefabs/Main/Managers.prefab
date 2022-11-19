@@ -258,7 +258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7213996dc52593e41893f73af9e88435, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FirstPersonCamera: {fileID: 0}
   FreeCamera: {fileID: 0}
 --- !u!1 &8111456309697555615
 GameObject:
@@ -386,9 +385,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a039d5f3a0c8ce458c41c676b5975a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VisualEffectItemPrefab: {fileID: 8845309807029738639, guid: 72f7859b0bd310b4f9a1c72d6ecd6ede,
-    type: 3}
-  VFXListAsset: {fileID: 11400000, guid: 2ed9ae466d0ee4a46836973e8589c716, type: 2}
   ShowOnlyActiveChunkGizmos: 0
-  FirstPersonTransform: {fileID: 0}
   FreeCameraTransform: {fileID: 0}
+  TransparentMaterial: {fileID: 2100000, guid: ecfcc3ce4c1c5e940bf5eae1e941ff54, type: 2}

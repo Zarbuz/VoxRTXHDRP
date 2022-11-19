@@ -15,7 +15,6 @@ public class CameraManager : ModuleSingleton<CameraManager>
 {
 	#region ScriptParameters
 
-	public CinemachineVirtualCamera FirstPersonCamera;
 	public CinemachineVirtualCamera FreeCamera;
 
 	#endregion
@@ -31,7 +30,6 @@ public class CameraManager : ModuleSingleton<CameraManager>
 		set
 		{
 			mCameraState = value;
-			FirstPersonCamera.gameObject.SetActive(mCameraState == eCameraState.FIRST_PERSON);
 			FreeCamera.gameObject.SetActive(mCameraState == eCameraState.FREE);
 		}
 	}
@@ -50,7 +48,7 @@ public class CameraManager : ModuleSingleton<CameraManager>
 
 	protected override void OnStart()
 	{
-		CameraState = eCameraState.FIRST_PERSON;
+		CameraState = eCameraState.FREE;
 		mFreeCamera = FreeCamera.GetComponent<FreeCamera>();
 		SpeedCamera = PlayerPrefs.GetInt(SPEED_CAMERA_KEY, 10);
 		SetSpeedCamera(SpeedCamera);
@@ -60,25 +58,10 @@ public class CameraManager : ModuleSingleton<CameraManager>
 
 	#region PublicMethods
 
-	public void SetCameraState(eCameraState cameraState)
-	{
-		CameraState = cameraState;
-		if (cameraState == eCameraState.FREE)
-		{
-			FreeCamera.transform.position = FirstPersonCamera.transform.position + Vector3.up;
-		}
-	}
 
 	public void SetFieldOfView(int value)
 	{
 		FreeCamera.m_Lens.FieldOfView = value;
-		FirstPersonCamera.m_Lens.FieldOfView = value;
-	}
-
-	public void SetRenderDistance(int distance)
-	{
-		FreeCamera.m_Lens.FarClipPlane = distance;
-		FirstPersonCamera.m_Lens.FarClipPlane = distance;
 	}
 
 	public void SetSpeedCamera(int value)

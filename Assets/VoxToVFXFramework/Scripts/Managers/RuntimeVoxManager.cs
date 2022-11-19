@@ -154,12 +154,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 				}
 				RefreshChunksToRender();
 			}
-
-			if (Vector3.Distance(PlayerPosition.position, mPreviousPosition) > 1.5f || isAnotherChunk)
-			{
-				mPreviousPosition = PlayerPosition.position;
-				RefreshColliders();
-			}
 		}
 
 		private void OnDrawGizmos()

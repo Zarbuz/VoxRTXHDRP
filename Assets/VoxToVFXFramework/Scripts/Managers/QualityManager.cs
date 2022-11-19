@@ -72,7 +72,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			IsDepthOfFieldActive = PlayerPrefs.GetInt(DEPTH_OF_FIELD_KEY, 0) == 1;
 			SetDepthOfField(IsDepthOfFieldActive);
 
-			RenderDistance = PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 2500);
+			RenderDistance = PlayerPrefs.GetInt(RENDER_DISTANCE_KEY, 100);
 			SetRenderDistance(RenderDistance);
 		}
 
@@ -158,7 +158,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 		{
 			RenderDistance = distance;
 			PlayerPrefs.SetInt(RENDER_DISTANCE_KEY, distance);
-			CameraManager.Instance.SetRenderDistance(distance);
 			RuntimeVoxManager.Instance.RefreshChunksToRender();
 		}
 

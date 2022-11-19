@@ -167,7 +167,6 @@ namespace VoxToVFXFramework.Scripts.UI.Settings
 			QualityManager.Instance.SetDepthOfField(value);
 		}
 
-
 		private void OnRenderDistanceValueChanged(float distance)
 		{
 			QualityManager.Instance.SetRenderDistance((int)distance);
