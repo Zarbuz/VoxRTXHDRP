@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using VoxToVFXFramework.Scripts.Singleton;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 
 namespace VoxToVFXFramework.Scripts.Managers
 {
@@ -17,7 +12,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 		#region ScriptParameters
 
 		[SerializeField] private Mesh Mesh;
-		[SerializeField] private Material DebugMaterial;
 
 		#endregion
 
@@ -70,7 +64,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 			foreach (KeyValuePair<int, List<Matrix4x4>> pair in chunks)
 			{
-				RayTracingMeshInstanceConfig config = new RayTracingMeshInstanceConfig(Mesh, 0, DebugMaterial);
+				RayTracingMeshInstanceConfig config = new RayTracingMeshInstanceConfig(Mesh, 0, RuntimeVoxManager.Instance.Materials[pair.Key]);
 				mRtas.AddInstances(config, pair.Value);
 			}
 
