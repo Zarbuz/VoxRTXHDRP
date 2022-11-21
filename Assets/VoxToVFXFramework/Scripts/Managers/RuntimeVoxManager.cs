@@ -1,6 +1,7 @@
 ﻿using FileToVoxCore.Utils;
 using FileToVoxCore.Vox;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -11,6 +12,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEditor.Rendering.HighDefinition;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.VFX;
 using VoxToVFXFramework.Scripts.Core;
@@ -20,6 +22,7 @@ using VoxToVFXFramework.Scripts.Importer;
 using VoxToVFXFramework.Scripts.Jobs;
 using VoxToVFXFramework.Scripts.ScriptableObjects;
 using VoxToVFXFramework.Scripts.Singleton;
+using VoxToVFXFramework.Scripts.UI;
 using Plane = UnityEngine.Plane;
 
 namespace VoxToVFXFramework.Scripts.Managers
@@ -55,13 +58,14 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		private static readonly int mMetallic = Shader.PropertyToID("_Metallic");
 		private static readonly int mSmoothness = Shader.PropertyToID("_Smoothness");
+		private static readonly int mEmissiveExposureWeight = Shader.PropertyToID("_EmissiveExposureWeight");
 
 		#endregion
 
 		#region Fields
 
 		public event Action LoadFinishedCallback;
-		public event Action UnloadFinishedCallback; 
+		public event Action UnloadFinishedCallback;
 
 		public Material[] Materials { get; private set; }
 		public bool RenderWithPathTracing { get; set; }
@@ -81,7 +85,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		private Transform PlayerPosition => FreeCameraTransform;
 		private UnsafeParallelHashMap<int, UnsafeList<VoxelVFX>> mChunksLoaded;
-		private UnsafeParallelHashMap<int, UnsafeList<Matrix4x4>> mChunkPerMaterial;
 		private VisualEffect mVisualEffect;
 		private GraphicsBuffer mPaletteBuffer;
 		private GraphicsBuffer mGraphicsBuffer;
@@ -99,7 +102,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private Quaternion mPreviousRotation;
 		private Vector3 mPreviousPosition;
 		private float mPreviousCheckTimer;
-
+		private bool mIsRenderLocked;
 
 		#endregion
 
@@ -138,27 +141,63 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		private void Update()
 		{
-			if (!IsReady)
+			if (!IsReady || CanvasPlayerPCManager.Instance.CanvasPlayerPcState != CanvasPlayerPCState.Closed)
 			{
 				return;
 			}
 
-			mCurrentChunkWorldIndex = GetPlayerCurrentChunkIndex(PlayerPosition.position);
 			float angle = Quaternion.Angle(mCamera.transform.rotation, mPreviousRotation);
-			mPreviousCheckTimer += Time.unscaledDeltaTime;
 			bool isAnotherChunk = mPreviousPlayerChunkIndex != mCurrentChunkWorldIndex;
+
+			mCurrentChunkWorldIndex = GetPlayerCurrentChunkIndex(PlayerPosition.position);
+			mPreviousCheckTimer += Time.unscaledDeltaTime;
+
+			if (Keyboard.current.rKey.wasPressedThisFrame && !RenderWithPathTracing)
+			{
+				RenderWithPathTracing = true;
+				SaveUpdateVars(isAnotherChunk);
+				RefreshChunksToRender();
+				return;
+			}
+
 			if (isAnotherChunk || angle > MIN_DIFF_ANGLE_CAMERA && mPreviousCheckTimer >= MIN_TIMER_CHECK_CAMERA)
 			{
-				mPreviousCheckTimer = 0;
-				if (isAnotherChunk)
+				if (RenderWithPathTracing)
 				{
-					mPreviousPlayerChunkIndex = mCurrentChunkWorldIndex;
+					StartCoroutine(DisablePathTracingCo());
 				}
 				else
 				{
-					mPreviousRotation = mCamera.transform.rotation;
+					if (!mIsRenderLocked)
+					{
+						SaveUpdateVars(isAnotherChunk);
+						RefreshChunksToRender();
+					}
 				}
-				RefreshChunksToRender();
+			}
+		}
+
+		private IEnumerator DisablePathTracingCo()
+		{
+			Debug.Log("[RuntimeVoxManager] DisablePathTracingCo...");
+			ManualRTASManager.Instance.ClearInstances();
+			PostProcessingManager.Instance.SetPathTracingActive(false);
+			RenderWithPathTracing = false;
+			mIsRenderLocked = true;
+			yield return new WaitForSeconds(0.1f);
+			mIsRenderLocked = false;
+		}
+
+		private void SaveUpdateVars(bool isAnotherChunk)
+		{
+			mPreviousCheckTimer = 0;
+			if (isAnotherChunk)
+			{
+				mPreviousPlayerChunkIndex = mCurrentChunkWorldIndex;
+			}
+			else
+			{
+				mPreviousRotation = mCamera.transform.rotation;
 			}
 		}
 
@@ -258,12 +297,13 @@ namespace VoxToVFXFramework.Scripts.Managers
 					Materials[i] = new Material(TransparentMaterial);
 				}
 
-				Materials[i].color = new Color(mat.color.r, mat.color.r, mat.color.b, mat.alpha);
+				Materials[i].color = new Color(mat.color.r, mat.color.g, mat.color.b, mat.alpha);
 				Materials[i].SetFloat(mMetallic, mat.metallic);
 				Materials[i].SetFloat(mSmoothness, mat.smoothness);
+				Materials[i].SetFloat(mEmissiveExposureWeight, 0.8f);
 				HDMaterial.SetUseEmissiveIntensity(Materials[i], mat.emissionPower > 0);
 				HDMaterial.SetEmissiveColor(Materials[i], mat.emission);
-				HDMaterial.SetEmissiveIntensity(Materials[i], mat.emissionPower * 50, EmissiveIntensityUnit.Nits);
+				HDMaterial.SetEmissiveIntensity(Materials[i], mat.emissionPower * 10, EmissiveIntensityUnit.Nits);
 				HDMaterial.ValidateMaterial(Materials[i]);
 			}
 		}
@@ -273,11 +313,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 			if (!mChunksLoaded.IsCreated)
 			{
 				mChunksLoaded = new UnsafeParallelHashMap<int, UnsafeList<VoxelVFX>>(Chunks.Length, Allocator.Persistent);
-			}
-
-			if (!mChunkPerMaterial.IsCreated)
-			{
-				mChunkPerMaterial = new UnsafeParallelHashMap<int, UnsafeList<Matrix4x4>>(255, Allocator.Persistent);
 			}
 
 			mChunksLoaded[chunkIndex] = list;
@@ -356,7 +391,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		#region PrivateMethods
 
-		
+
 		private void RefreshDebugLod()
 		{
 			if (!IsReady)
@@ -383,6 +418,11 @@ namespace VoxToVFXFramework.Scripts.Managers
 		{
 			if (RenderWithPathTracing)
 			{
+				PostProcessingManager.Instance.SetPathTracingActive(true);
+
+				mVisualEffect.enabled = false;
+				mGraphicsBuffer?.Release();
+
 				Dictionary<int, List<Matrix4x4>> chunks = new Dictionary<int, List<Matrix4x4>>();
 				foreach (VoxelVFX voxel in voxels)
 				{
@@ -405,12 +445,13 @@ namespace VoxToVFXFramework.Scripts.Managers
 			}
 			else
 			{
+				mVisualEffect.enabled = true;
 				mVisualEffect.visualEffectAsset = GetVisualEffectAsset(voxels.Length);
 				mVisualEffect.Reinit();
 
 				string colorGreen = "green";
 				string colorRed = "red";
-				Debug.Log($"[RuntimeVoxManager] <color={(voxels.Length < MAX_CAPACITY_VFX ? colorGreen : colorRed)}> RefreshRender: {voxels.Length}</color>");
+				//Debug.Log($"[RuntimeVoxManager] <color={(voxels.Length < MAX_CAPACITY_VFX ? colorGreen : colorRed)}> RefreshRender: {voxels.Length}</color>");
 
 				mGraphicsBuffer?.Release();
 				mGraphicsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, voxels.Length, Marshal.SizeOf(typeof(VoxelVFX)));
@@ -425,7 +466,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 				mVisualEffect.Play();
 			}
-			
+
 		}
 
 		private VisualEffectAsset GetVisualEffectAsset(int voxelCount)
@@ -437,7 +478,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			}
 
 			VisualEffectAsset asset = VFXListAsset.VisualEffectAssets[index];
-			Debug.Log("[RuntimeVoxManager] Selected VisualEffectAsset: " + asset.name);
+			//Debug.Log("[RuntimeVoxManager] Selected VisualEffectAsset: " + asset.name);
 			return asset;
 		}
 

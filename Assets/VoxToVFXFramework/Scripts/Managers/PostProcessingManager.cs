@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using VoxToVFXFramework.Scripts.Singleton;
@@ -120,6 +119,14 @@ namespace VoxToVFXFramework.Scripts.Managers
 			if (mVolume.profile.TryGet(typeof(DepthOfField), out DepthOfField depthOfField))
 			{
 				depthOfField.quality = scalableSettingLevelParameter;
+			}
+		}
+
+		public void SetPathTracingActive(bool active)
+		{
+			if (mVolume.profile.TryGet(typeof(PathTracing), out PathTracing pathTracing))
+			{
+				pathTracing.enable.SetValue(new BoolParameter(active, false));
 			}
 		}
 

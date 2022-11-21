@@ -41,7 +41,15 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		public void Build(Dictionary<int, List<Matrix4x4>> chunks)
 		{
-			mRtas.ClearInstances();
+			Debug.Log("[ManualRTASManager] Build");
+
+			if (!RuntimeVoxManager.Instance.RenderWithPathTracing)
+			{
+				Debug.LogError("Can't render without pathtracing enabled!");
+				return;
+			}
+
+			mRtas = new RayTracingAccelerationStructure();
 
 			RayTracingInstanceCullingConfig cullingConfig = new RayTracingInstanceCullingConfig();
 
@@ -75,6 +83,16 @@ namespace VoxToVFXFramework.Scripts.Managers
 			mHdCamera.rayTracingAccelerationStructure = mRtas;
 		}
 
+		public void ClearInstances()
+		{
+			Debug.Log("[ManualRTASManager] ClearInstances");
+			mRtas?.Dispose();
+			mHdCamera.Reset();
+			mHdCamera.rayTracingAccelerationStructure = null;
+
+			HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
+			renderPipeline.ResetPathTracing();
+		}
 
 		#endregion
 	}
