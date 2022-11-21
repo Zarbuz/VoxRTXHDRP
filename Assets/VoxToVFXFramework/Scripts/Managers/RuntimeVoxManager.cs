@@ -92,15 +92,11 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private GraphicsBuffer mChunkBuffer;
 
 		private Plane[] mPlanes;
-		private Light mDirectionalLight;
-		private HDAdditionalLightData mAdditionalLightData;
 
 		private int mPreviousPlayerChunkIndex;
 		private int mCurrentChunkWorldIndex;
-		private int mCurrentChunkIndex;
 		private UnityEngine.Camera mCamera;
 		private Quaternion mPreviousRotation;
-		private Vector3 mPreviousPosition;
 		private float mPreviousCheckTimer;
 		private bool mIsRenderLocked;
 
@@ -111,8 +107,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 		protected override void OnStart()
 		{
 			mCamera = UnityEngine.Camera.main;
-			mDirectionalLight = FindObjectOfType<Light>();
-			mAdditionalLightData = mDirectionalLight.GetComponent<HDAdditionalLightData>();
 
 			AssemblyFileVersionAttribute runtimeVersion = typeof(VoxModel)
 				.GetTypeInfo()
@@ -300,11 +294,15 @@ namespace VoxToVFXFramework.Scripts.Managers
 				Materials[i].color = new Color(mat.color.r, mat.color.g, mat.color.b, mat.alpha);
 				Materials[i].SetFloat(mMetallic, mat.metallic);
 				Materials[i].SetFloat(mSmoothness, mat.smoothness);
-				Materials[i].SetFloat(mEmissiveExposureWeight, 0.8f);
-				HDMaterial.SetUseEmissiveIntensity(Materials[i], mat.emissionPower > 0);
-				HDMaterial.SetEmissiveColor(Materials[i], mat.emission);
-				HDMaterial.SetEmissiveIntensity(Materials[i], mat.emissionPower * 10, EmissiveIntensityUnit.Nits);
-				HDMaterial.ValidateMaterial(Materials[i]);
+				Materials[i].SetFloat(mEmissiveExposureWeight, 0);
+				if (mat.emissionPower > 0)
+				{
+					HDMaterial.SetUseEmissiveIntensity(Materials[i], mat.emissionPower > 0);
+					HDMaterial.SetEmissiveColor(Materials[i], mat.color);
+					HDMaterial.SetEmissiveIntensity(Materials[i], mat.emissionPower * 10, EmissiveIntensityUnit.Nits);
+					HDMaterial.ValidateMaterial(Materials[i]);
+				}
+
 			}
 		}
 
@@ -420,7 +418,8 @@ namespace VoxToVFXFramework.Scripts.Managers
 			{
 				PostProcessingManager.Instance.SetPathTracingActive(true);
 
-				mVisualEffect.enabled = false;
+				Destroy(mVisualEffect.gameObject);
+				mVisualEffect = null;
 				mGraphicsBuffer?.Release();
 
 				Dictionary<int, List<Matrix4x4>> chunks = new Dictionary<int, List<Matrix4x4>>();
@@ -445,13 +444,13 @@ namespace VoxToVFXFramework.Scripts.Managers
 			}
 			else
 			{
-				mVisualEffect.enabled = true;
+				if (mVisualEffect == null)
+				{
+					mVisualEffect = Instantiate(VisualEffectItemPrefab);
+					mVisualEffect.enabled = true;
+				}
 				mVisualEffect.visualEffectAsset = GetVisualEffectAsset(voxels.Length);
 				mVisualEffect.Reinit();
-
-				string colorGreen = "green";
-				string colorRed = "red";
-				//Debug.Log($"[RuntimeVoxManager] <color={(voxels.Length < MAX_CAPACITY_VFX ? colorGreen : colorRed)}> RefreshRender: {voxels.Length}</color>");
 
 				mGraphicsBuffer?.Release();
 				mGraphicsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, voxels.Length, Marshal.SizeOf(typeof(VoxelVFX)));

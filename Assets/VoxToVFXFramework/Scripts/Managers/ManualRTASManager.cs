@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.VFX;
 using VoxToVFXFramework.Scripts.Singleton;
 
 namespace VoxToVFXFramework.Scripts.Managers
@@ -92,6 +93,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 			HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
 			renderPipeline.ResetPathTracing();
+			VFXManager.FlushEmptyBatches();
 		}
 
 		#endregion
