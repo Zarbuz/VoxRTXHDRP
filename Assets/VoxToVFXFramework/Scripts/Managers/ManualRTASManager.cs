@@ -87,13 +87,12 @@ namespace VoxToVFXFramework.Scripts.Managers
 		public void ClearInstances()
 		{
 			Debug.Log("[ManualRTASManager] ClearInstances");
-			mRtas?.Dispose();
-			mHdCamera.Reset();
+			mRtas.ClearInstances();
+			//mRtas.Build(transform.position);
+
 			mHdCamera.rayTracingAccelerationStructure = null;
 
-			HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
-			renderPipeline.ResetPathTracing();
-			VFXManager.FlushEmptyBatches();
+			
 		}
 
 		#endregion

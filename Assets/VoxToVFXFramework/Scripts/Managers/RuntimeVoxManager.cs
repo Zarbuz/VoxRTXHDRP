@@ -13,6 +13,7 @@ using Unity.Mathematics;
 using UnityEditor.Rendering.HighDefinition;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.VFX;
 using VoxToVFXFramework.Scripts.Core;
@@ -114,7 +115,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 				.GetCustomAttribute<AssemblyFileVersionAttribute>();
 
 			Debug.Log("FileToVoxCore version: " + runtimeVersion.Version);
-
+			QualityManager.Instance.Initialize();
 
 			ExposureWeight.OnValueChanged += RefreshExposureWeight;
 			DebugLod.OnValueChanged += RefreshDebugLod;
@@ -174,11 +175,18 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private IEnumerator DisablePathTracingCo()
 		{
 			Debug.Log("[RuntimeVoxManager] DisablePathTracingCo...");
-			ManualRTASManager.Instance.ClearInstances();
-			PostProcessingManager.Instance.SetPathTracingActive(false);
-			RenderWithPathTracing = false;
 			mIsRenderLocked = true;
+			RenderWithPathTracing = false;
+			ManualRTASManager.Instance.ClearInstances();
+			//yield return new WaitForSeconds(0.1f);
+			PostProcessingManager.Instance.SetPathTracingActive(false);
 			yield return new WaitForSeconds(0.1f);
+			HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
+			renderPipeline.ResetPathTracing();
+			yield return new WaitForSeconds(0.1f);
+			VFXManager.FlushEmptyBatches();
+			yield return new WaitForSeconds(0.1f);
+
 			mIsRenderLocked = false;
 		}
 

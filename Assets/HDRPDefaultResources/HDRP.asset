@@ -42,9 +42,9 @@ MonoBehaviour:
     supportTransparentDepthPrepass: 1
     supportTransparentDepthPostpass: 1
     colorBufferFormat: 74
-    supportCustomPass: 1
+    supportCustomPass: 0
     customBufferFormat: 12
-    supportedLitShaderMode: 1
+    supportedLitShaderMode: 2
     planarReflectionResolution:
       m_Values: 000100000004000000080000
       m_SchemaId:
@@ -69,7 +69,7 @@ MonoBehaviour:
     supportProbeVolumeScenarios: 0
     supportProbeVolumeScenarioBlending: 1
     probeVolumeBlendingMemoryBudget: 128
-    supportRayTracing: 1
+    supportRayTracing: 0
     supportVFXRayTracing: 1
     supportedRayTracingMode: 3
     lightLoopSettings:
