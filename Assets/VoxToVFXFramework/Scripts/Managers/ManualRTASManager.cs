@@ -52,24 +52,24 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 			mRtas = new RayTracingAccelerationStructure();
 
-			RayTracingInstanceCullingConfig cullingConfig = new RayTracingInstanceCullingConfig();
+			//RayTracingInstanceCullingConfig cullingConfig = new RayTracingInstanceCullingConfig();
 
-			cullingConfig.subMeshFlagsConfig.opaqueMaterials = RayTracingSubMeshFlags.Enabled | RayTracingSubMeshFlags.ClosestHitOnly;
-			cullingConfig.subMeshFlagsConfig.alphaTestedMaterials = RayTracingSubMeshFlags.Enabled;
-			cullingConfig.subMeshFlagsConfig.transparentMaterials = RayTracingSubMeshFlags.Disabled;
+			//cullingConfig.subMeshFlagsConfig.opaqueMaterials = RayTracingSubMeshFlags.Enabled | RayTracingSubMeshFlags.ClosestHitOnly;
+			//cullingConfig.subMeshFlagsConfig.alphaTestedMaterials = RayTracingSubMeshFlags.Enabled;
+			//cullingConfig.subMeshFlagsConfig.transparentMaterials = RayTracingSubMeshFlags.Disabled;
 
-			RayTracingInstanceCullingTest cullingTest = new RayTracingInstanceCullingTest();
-			cullingTest.allowAlphaTestedMaterials = true;
-			cullingTest.allowOpaqueMaterials = true;
-			cullingTest.allowTransparentMaterials = false;
-			cullingTest.instanceMask = 255;
-			cullingTest.layerMask = -1;
-			cullingTest.shadowCastingModeMask = -1;
+			//RayTracingInstanceCullingTest cullingTest = new RayTracingInstanceCullingTest();
+			//cullingTest.allowAlphaTestedMaterials = true;
+			//cullingTest.allowOpaqueMaterials = true;
+			//cullingTest.allowTransparentMaterials = false;
+			//cullingTest.instanceMask = 255;
+			//cullingTest.layerMask = -1;
+			//cullingTest.shadowCastingModeMask = -1;
 
-			cullingConfig.instanceTests = new RayTracingInstanceCullingTest[1];
-			cullingConfig.instanceTests[0] = cullingTest;
+			//cullingConfig.instanceTests = new RayTracingInstanceCullingTest[1];
+			//cullingConfig.instanceTests[0] = cullingTest;
 
-			mRtas.CullInstances(ref cullingConfig);
+			//mRtas.CullInstances(ref cullingConfig);
 
 			foreach (KeyValuePair<int, List<Matrix4x4>> pair in chunks)
 			{

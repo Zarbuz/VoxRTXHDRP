@@ -20,7 +20,7 @@ MonoBehaviour:
     x: -1180
     y: -65
     width: 2975
-    height: 5145
+    height: 5162
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -73,7 +73,7 @@ MonoBehaviour:
   - name: InitialBurstCount
     path: InitialBurstCount
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Int
     realType: Int32
@@ -89,7 +89,7 @@ MonoBehaviour:
   - name: DebugLod
     path: DebugLod
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Bool
     realType: Boolean
@@ -105,7 +105,7 @@ MonoBehaviour:
   - name: Buffer
     path: 
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: 
     realType: GraphicsBuffer
@@ -120,7 +120,7 @@ MonoBehaviour:
   - name: ChunkBuffer
     path: 
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: 
     realType: GraphicsBuffer
@@ -135,7 +135,7 @@ MonoBehaviour:
   - name: MaterialBuffer
     path: 
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: 
     realType: GraphicsBuffer
@@ -150,7 +150,7 @@ MonoBehaviour:
   - name: ExposureWeight
     path: ExposureWeight
     tooltip: 
-    space: 0
+    space: -1
     spaceable: 0
     sheetType: m_Float
     realType: Single
@@ -2697,8 +2697,8 @@ MonoBehaviour:
   revertSorting: 0
   indirectDraw: 0
   computeCulling: 1
-  frustumCulling: 0
-  castShadows: 1
+  frustumCulling: 1
+  castShadows: 0
   useExposureWeight: 0
   flipbookLayout: 0
   enableRayTracing: 0
@@ -2729,8 +2729,6 @@ MonoBehaviour:
     - _DstBlend
     - _AlphaSrcBlend
     - _AlphaDstBlend
-    - _AlphaToMask
-    - _AlphaToMaskInspectorValue
     - _ZWrite
     - _TransparentZWrite
     - _CullMode
@@ -2760,7 +2758,7 @@ MonoBehaviour:
     - _RayTracing
     - _RefractionModel
     m_PropertyValues:
-    - 4
+    - 1
     - 0
     - 0
     - 0
@@ -2778,8 +2776,6 @@ MonoBehaviour:
     - 1
     - 0
     - 1
-    - 0
-    - 0
     - 0
     - 1
     - 1
@@ -2799,15 +2795,15 @@ MonoBehaviour:
     - 0
     - 6
     - 8
-    - 8
+    - 9
     - 40
-    - 40
+    - 41
     - 4
     - 4
-    - 14
+    - 15
     - 10
     - 4
-    - 1
+    - 0
     - 0
   useBaseColorMap: 3
   useMaskMap: 0
@@ -2823,7 +2819,7 @@ MonoBehaviour:
   preserveSpecularLighting: 0
   enableSpecular: 1
   smokeEmissiveMode: 0
-  receiveShadows: 1
+  receiveShadows: 0
   enableCookie: 1
   enableEnvLight: 1
   primitiveType: 1
@@ -2969,8 +2965,8 @@ MonoBehaviour:
   revertSorting: 0
   indirectDraw: 0
   computeCulling: 1
-  frustumCulling: 0
-  castShadows: 1
+  frustumCulling: 1
+  castShadows: 0
   useExposureWeight: 0
   flipbookLayout: 0
   enableRayTracing: 0
@@ -3001,8 +2997,6 @@ MonoBehaviour:
     - _DstBlend
     - _AlphaSrcBlend
     - _AlphaDstBlend
-    - _AlphaToMask
-    - _AlphaToMaskInspectorValue
     - _ZWrite
     - _TransparentZWrite
     - _CullMode
@@ -3032,7 +3026,7 @@ MonoBehaviour:
     - _RayTracing
     - _RefractionModel
     m_PropertyValues:
-    - 4
+    - 1
     - 0
     - 0
     - 0
@@ -3050,8 +3044,6 @@ MonoBehaviour:
     - 1
     - 0
     - 1
-    - 0
-    - 0
     - 0
     - 1
     - 0
@@ -3071,15 +3063,15 @@ MonoBehaviour:
     - 0
     - 6
     - 8
-    - 8
+    - 9
     - 40
-    - 40
+    - 41
     - 4
     - 4
-    - 14
+    - 15
     - 10
     - 4
-    - 1
+    - 0
     - 0
   useBaseColorMap: 3
   useMaskMap: 0
@@ -3095,7 +3087,7 @@ MonoBehaviour:
   preserveSpecularLighting: 0
   enableSpecular: 1
   smokeEmissiveMode: 0
-  receiveShadows: 1
+  receiveShadows: 0
   enableCookie: 1
   enableEnvLight: 1
   primitiveType: 1
@@ -3269,8 +3261,8 @@ MonoBehaviour:
   revertSorting: 0
   indirectDraw: 0
   computeCulling: 1
-  frustumCulling: 0
-  castShadows: 1
+  frustumCulling: 1
+  castShadows: 0
   useExposureWeight: 0
   flipbookLayout: 0
   enableRayTracing: 0
@@ -3301,8 +3293,6 @@ MonoBehaviour:
     - _DstBlend
     - _AlphaSrcBlend
     - _AlphaDstBlend
-    - _AlphaToMask
-    - _AlphaToMaskInspectorValue
     - _ZWrite
     - _TransparentZWrite
     - _CullMode
@@ -3351,8 +3341,6 @@ MonoBehaviour:
     - 0
     - 1
     - 0
-    - 0
-    - 0
     - 1
     - 0
     - 2
@@ -3371,15 +3359,15 @@ MonoBehaviour:
     - 0
     - 6
     - 8
-    - 8
+    - 9
     - 40
-    - 40
+    - 41
     - 4
     - 4
-    - 14
+    - 15
     - 10
     - 4
-    - 1
+    - 0
     - 0
   useBaseColorMap: 3
   useMaskMap: 0
@@ -3395,7 +3383,7 @@ MonoBehaviour:
   preserveSpecularLighting: 0
   enableSpecular: 1
   smokeEmissiveMode: 0
-  receiveShadows: 1
+  receiveShadows: 0
   enableCookie: 1
   enableEnvLight: 1
   primitiveType: 1
@@ -3569,8 +3557,8 @@ MonoBehaviour:
   revertSorting: 0
   indirectDraw: 0
   computeCulling: 1
-  frustumCulling: 0
-  castShadows: 1
+  frustumCulling: 1
+  castShadows: 0
   useExposureWeight: 0
   flipbookLayout: 0
   enableRayTracing: 0
@@ -3601,8 +3589,6 @@ MonoBehaviour:
     - _DstBlend
     - _AlphaSrcBlend
     - _AlphaDstBlend
-    - _AlphaToMask
-    - _AlphaToMaskInspectorValue
     - _ZWrite
     - _TransparentZWrite
     - _CullMode
@@ -3651,8 +3637,6 @@ MonoBehaviour:
     - 0
     - 1
     - 0
-    - 0
-    - 0
     - 1
     - 0
     - 2
@@ -3671,15 +3655,15 @@ MonoBehaviour:
     - 0
     - 6
     - 8
-    - 8
+    - 9
     - 40
-    - 40
+    - 41
     - 4
     - 4
-    - 14
+    - 15
     - 10
     - 4
-    - 1
+    - 0
     - 0
   useBaseColorMap: 3
   useMaskMap: 0
@@ -3695,7 +3679,7 @@ MonoBehaviour:
   preserveSpecularLighting: 0
   enableSpecular: 1
   smokeEmissiveMode: 0
-  receiveShadows: 1
+  receiveShadows: 0
   enableCookie: 1
   enableEnvLight: 1
   primitiveType: 1
@@ -3869,8 +3853,8 @@ MonoBehaviour:
   revertSorting: 0
   indirectDraw: 0
   computeCulling: 1
-  frustumCulling: 0
-  castShadows: 1
+  frustumCulling: 1
+  castShadows: 0
   useExposureWeight: 0
   flipbookLayout: 0
   enableRayTracing: 0
@@ -3901,8 +3885,6 @@ MonoBehaviour:
     - _DstBlend
     - _AlphaSrcBlend
     - _AlphaDstBlend
-    - _AlphaToMask
-    - _AlphaToMaskInspectorValue
     - _ZWrite
     - _TransparentZWrite
     - _CullMode
@@ -3951,8 +3933,6 @@ MonoBehaviour:
     - 0
     - 1
     - 0
-    - 0
-    - 0
     - 1
     - 0
     - 2
@@ -3971,15 +3951,15 @@ MonoBehaviour:
     - 0
     - 6
     - 8
-    - 8
+    - 9
     - 40
-    - 40
+    - 41
     - 4
     - 4
-    - 14
+    - 15
     - 10
     - 4
-    - 1
+    - 0
     - 0
   useBaseColorMap: 3
   useMaskMap: 0
@@ -3995,7 +3975,7 @@ MonoBehaviour:
   preserveSpecularLighting: 1
   enableSpecular: 1
   smokeEmissiveMode: 0
-  receiveShadows: 1
+  receiveShadows: 0
   enableCookie: 1
   enableEnvLight: 1
   primitiveType: 1
@@ -4168,8 +4148,8 @@ MonoBehaviour:
   revertSorting: 0
   indirectDraw: 0
   computeCulling: 1
-  frustumCulling: 0
-  castShadows: 1
+  frustumCulling: 1
+  castShadows: 0
   useExposureWeight: 0
   flipbookLayout: 0
   enableRayTracing: 0
@@ -4200,8 +4180,6 @@ MonoBehaviour:
     - _DstBlend
     - _AlphaSrcBlend
     - _AlphaDstBlend
-    - _AlphaToMask
-    - _AlphaToMaskInspectorValue
     - _ZWrite
     - _TransparentZWrite
     - _CullMode
@@ -4250,8 +4228,6 @@ MonoBehaviour:
     - 0
     - 1
     - 0
-    - 0
-    - 0
     - 1
     - 0
     - 2
@@ -4270,15 +4246,15 @@ MonoBehaviour:
     - 0
     - 6
     - 8
-    - 8
+    - 9
     - 40
-    - 40
+    - 41
     - 4
     - 4
-    - 14
+    - 15
     - 10
     - 4
-    - 1
+    - 0
     - 0
   useBaseColorMap: 3
   useMaskMap: 0
@@ -4294,7 +4270,7 @@ MonoBehaviour:
   preserveSpecularLighting: 0
   enableSpecular: 1
   smokeEmissiveMode: 0
-  receiveShadows: 1
+  receiveShadows: 0
   enableCookie: 1
   enableEnvLight: 1
   primitiveType: 1
