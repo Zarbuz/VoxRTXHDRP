@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
@@ -13,6 +14,12 @@ namespace VoxToVFXFramework.Scripts.Managers
 		#region ScriptParameters
 
 		[SerializeField] private Mesh Mesh;
+
+		#endregion
+
+		#region ConstStatic
+
+		private const int MAX_INSTANCES_PER_CONFIG = 1048575;
 
 		#endregion
 
@@ -73,8 +80,16 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 			foreach (KeyValuePair<int, List<Matrix4x4>> pair in chunks)
 			{
-				RayTracingMeshInstanceConfig config = new RayTracingMeshInstanceConfig(Mesh, 0, RuntimeVoxManager.Instance.Materials[pair.Key]);
-				mRtas.AddInstances(config, pair.Value);
+				int index = 0;
+				int totalTaken = 0;
+				do
+				{
+					RayTracingMeshInstanceConfig config = new RayTracingMeshInstanceConfig(Mesh, 0, RuntimeVoxManager.Instance.Materials[pair.Key]);
+					List<Matrix4x4> list = pair.Value.Skip(index * MAX_INSTANCES_PER_CONFIG).Take(MAX_INSTANCES_PER_CONFIG).ToList();
+					totalTaken += list.Count;
+					mRtas.AddInstances(config, list);
+					index++;
+				} while (totalTaken != pair.Value.Count);
 			}
 
 			// Build the RTAS

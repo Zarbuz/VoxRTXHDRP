@@ -479,7 +479,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private VisualEffectAsset GetVisualEffectAsset(int voxelCount)
 		{
 			int index = voxelCount / STEP_CAPACITY;
-			if (index > VFXListAsset.VisualEffectAssets.Count)
+			if (index >= VFXListAsset.VisualEffectAssets.Count)
 			{
 				index = VFXListAsset.VisualEffectAssets.Count - 1;
 			}
