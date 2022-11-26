@@ -160,7 +160,13 @@ namespace VoxToVFXFramework.Scripts.Managers
 			{
 				if (RenderWithPathTracing)
 				{
-					StartCoroutine(DisablePathTracingCo());
+					ManualRTASManager.Instance.ClearInstances();
+					CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
+					HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
+					renderPipeline.ResetPathTracing();
+					RenderWithPathTracing = false;
+
+					//StartCoroutine(DisablePathTracingCo());
 				}
 				else
 				{
@@ -180,7 +186,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			RenderWithPathTracing = false;
 			ManualRTASManager.Instance.ClearInstances();
 			//yield return new WaitForSeconds(0.1f);
-			PostProcessingManager.Instance.SetPathTracingActive(false);
+			CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
 			yield return new WaitForSeconds(0.1f);
 			HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
 			renderPipeline.ResetPathTracing();
@@ -427,7 +433,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		{
 			if (RenderWithPathTracing)
 			{
-				PostProcessingManager.Instance.SetPathTracingActive(true);
+				CustomFrameSettingsManager.Instance.SetRaytracingActive(true);
 
 				Destroy(mVisualEffect.gameObject);
 				mVisualEffect = null;

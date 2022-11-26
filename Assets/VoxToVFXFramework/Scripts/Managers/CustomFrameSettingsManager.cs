@@ -7,13 +7,11 @@ namespace VoxToVFXFramework.Scripts.Managers
 	{
 		private HDAdditionalCameraData mCameraData;
 		private FrameSettings mFrameSettings;
-		private FrameSettingsOverrideMask mFrameSettingsOverrideMask;
 
 		protected override void OnStart()
 		{
 			mCameraData = this.GetComponent<HDAdditionalCameraData>();
 			mFrameSettings = mCameraData.renderingPathCustomFrameSettings;
-			mFrameSettingsOverrideMask = mCameraData.renderingPathCustomFrameSettingsOverrideMask;
 			//Make sure Custom Frame Settings are enabled in the camera
 			mCameraData.customRenderingSettings = true;
 		}

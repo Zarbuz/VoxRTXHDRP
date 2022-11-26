@@ -122,16 +122,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 			}
 		}
 
-		public void SetPathTracingActive(bool active)
-		{
-			Debug.Log("[PostProcessingManager] SetPathTracingActive: "+ active);
-			if (mVolume.profile.TryGet(typeof(PathTracing), out PathTracing pathTracing))
-			{
-				pathTracing.enable.SetValue(new BoolParameter(active, false));
-			}
-			CustomFrameSettingsManager.Instance.SetRaytracingActive(active);
-		}
-
 		#endregion
 
 		#region PrivateMethods
