@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.VFX;
@@ -41,6 +42,14 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private void OnDestroy()
 		{
 			mRtas?.Dispose();
+		}
+
+		private void Update()
+		{
+			if (Keyboard.current.oKey.wasPressedThisFrame)
+			{
+				ClearInstances();
+			}
 		}
 
 		#endregion
@@ -106,10 +115,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			//mRtas.Build(transform.position);
 
 			mHdCamera.rayTracingAccelerationStructure = null;
-
-			
 		}
-
 		#endregion
 	}
 }

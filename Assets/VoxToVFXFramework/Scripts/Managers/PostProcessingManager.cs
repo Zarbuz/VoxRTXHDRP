@@ -129,6 +129,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			{
 				pathTracing.enable.SetValue(new BoolParameter(active, false));
 			}
+			CustomFrameSettingsManager.Instance.SetRaytracingActive(active);
 		}
 
 		#endregion

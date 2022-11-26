@@ -2277,6 +2277,7 @@
     "m_ObjectId": "f0fc6520670b4efeb7c0355df96aa440",
     "m_RayTracing": true,
     "m_MaterialType": 0,
+    "m_MaterialTypeMask": 2,
     "m_RefractionModel": 0,
     "m_SSSTransmission": true,
     "m_EnergyConservingSpecular": true,
@@ -2317,7 +2318,7 @@
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.Rendering.HighDefinition.ShaderGraph.SystemData",
     "m_ObjectId": "f49e7b6a888b44c793b311f38d4e0327",
-    "m_MaterialNeedsUpdateHash": 552,
+    "m_MaterialNeedsUpdateHash": 554,
     "m_SurfaceType": 0,
     "m_RenderingPass": 1,
     "m_BlendMode": 0,
@@ -2342,7 +2343,7 @@
     "m_TessellationBackFaceCullEpsilon": -0.25,
     "m_TessellationMaxDisplacement": 0.009999999776482582,
     "m_DebugSymbols": false,
-    "m_Version": 1,
+    "m_Version": 2,
     "inspectorFoldoutMask": 11
 }
 
@@ -2439,7 +2440,7 @@
     ],
     "m_CustomEditorGUI": "",
     "m_SupportVFX": true,
-    "m_SupportComputeForVertexSetup": false
+    "m_SupportLineRendering": false
 }
 
 {

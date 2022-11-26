@@ -99,7 +99,8 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private UnityEngine.Camera mCamera;
 		private Quaternion mPreviousRotation;
 		private float mPreviousCheckTimer;
-		private bool mIsRenderLocked;
+		private bool mIsRenderPathTracingLocked;
+		private bool mIsRenderFinished;
 
 		#endregion
 
@@ -147,7 +148,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			mCurrentChunkWorldIndex = GetPlayerCurrentChunkIndex(PlayerPosition.position);
 			mPreviousCheckTimer += Time.unscaledDeltaTime;
 
-			if (Keyboard.current.rKey.wasPressedThisFrame && !RenderWithPathTracing)
+			if (Keyboard.current.rKey.wasPressedThisFrame && !RenderWithPathTracing && mIsRenderFinished)
 			{
 				RenderWithPathTracing = true;
 				SaveUpdateVars(isAnotherChunk);
@@ -163,7 +164,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 				}
 				else
 				{
-					if (!mIsRenderLocked)
+					if (!mIsRenderPathTracingLocked)
 					{
 						SaveUpdateVars(isAnotherChunk);
 						RefreshChunksToRender();
@@ -175,7 +176,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private IEnumerator DisablePathTracingCo()
 		{
 			Debug.Log("[RuntimeVoxManager] DisablePathTracingCo...");
-			mIsRenderLocked = true;
+			mIsRenderPathTracingLocked = true;
 			RenderWithPathTracing = false;
 			ManualRTASManager.Instance.ClearInstances();
 			//yield return new WaitForSeconds(0.1f);
@@ -187,7 +188,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			VFXManager.FlushEmptyBatches();
 			yield return new WaitForSeconds(0.1f);
 
-			mIsRenderLocked = false;
+			mIsRenderPathTracingLocked = false;
 		}
 
 		private void SaveUpdateVars(bool isAnotherChunk)
@@ -348,6 +349,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			if (!Chunks.IsCreated)
 				return;
 
+			mIsRenderFinished = false;
 			mPlanes = GeometryUtility.CalculateFrustumPlanes(mCamera);
 
 			NativeList<int> chunkIndex = new NativeList<int>(Allocator.TempJob);
@@ -386,6 +388,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 				RefreshRender(buffer);
 			}
 
+			mIsRenderFinished = true;
 			buffer.Dispose();
 		}
 
@@ -482,6 +485,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			if (index >= VFXListAsset.VisualEffectAssets.Count)
 			{
 				index = VFXListAsset.VisualEffectAssets.Count - 1;
+				Debug.LogWarningFormat("[RuntimeVoxManager] index {0} is greater than the max visual effect assets count: {1}", index, VFXListAsset.VisualEffectAssets.Count);
 			}
 
 			VisualEffectAsset asset = VFXListAsset.VisualEffectAssets[index];

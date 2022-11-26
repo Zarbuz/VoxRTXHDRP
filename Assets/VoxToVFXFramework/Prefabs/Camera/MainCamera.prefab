@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9017514825924090540}
   - component: {fileID: 5879726068429174553}
   - component: {fileID: 4080169756018455013}
+  - component: {fileID: 8304410978804376188}
   m_Layer: 0
   m_Name: MainCamera
   m_TagString: MainCamera
@@ -68,7 +69,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.2
-  far clip plane: 500
+  far clip plane: 5000
   field of view: 40
   orthographic: 0
   orthographic size: 10
@@ -141,7 +142,7 @@ MonoBehaviour:
   xrRendering: 1
   fullscreenPassthrough: 0
   allowDynamicResolution: 1
-  customRenderingSettings: 0
+  customRenderingSettings: 1
   invertFaceCulling: 0
   probeLayerMask:
     serializedVersion: 2
@@ -162,7 +163,7 @@ MonoBehaviour:
   m_RenderingPathCustomFrameSettings:
     bitDatas:
       data1: 72198260625768269
-      data2: 13763000477350330392
+      data2: 13763000477081894936
     lodBias: 1
     lodBiasMode: 0
     lodBiasQualityLevel: 0
@@ -178,9 +179,9 @@ MonoBehaviour:
   renderingPathCustomFrameSettingsOverrideMask:
     mask:
       data1: 8388608
-      data2: 2147483648
+      data2: 2415919104
   defaultFrameSettings: 0
-  m_Version: 8
+  m_Version: 9
   m_ObsoleteRenderingPath: 0
   m_ObsoleteFrameSettings:
     overrides: 0
@@ -274,4 +275,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
-  DebugMaterial: {fileID: 2100000, guid: 87fb2a5d913d17840a985028e04493a7, type: 2}
+--- !u!114 &8304410978804376188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9017514825924090541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02725b9a0bcb9de4e8a0f54df90e0ec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

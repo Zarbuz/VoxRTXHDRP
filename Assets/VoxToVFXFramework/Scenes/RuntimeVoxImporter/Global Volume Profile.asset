@@ -34,7 +34,7 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 10
   denoising:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value: 2
   useAOVs:
     m_OverrideState: 1
@@ -234,49 +234,6 @@ MonoBehaviour:
   cameraClusterRange:
     m_OverrideState: 1
     m_Value: 50
---- !u!114 &-4955338219771770001
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ddcec8a8eb2d684d833ac8f5d26aebd, type: 3}
-  m_Name: HDShadowSettings
-  m_EditorClassIdentifier: 
-  active: 1
-  maxShadowDistance:
-    m_OverrideState: 1
-    m_Value: 2000
-  directionalTransmissionMultiplier:
-    m_OverrideState: 1
-    m_Value: 1
-  cascadeShadowSplitCount:
-    m_OverrideState: 1
-    m_Value: 4
-  cascadeShadowSplit0:
-    m_OverrideState: 1
-    m_Value: 0.072
-  cascadeShadowSplit1:
-    m_OverrideState: 1
-    m_Value: 0.2205
-  cascadeShadowSplit2:
-    m_OverrideState: 1
-    m_Value: 0.4
-  cascadeShadowBorder0:
-    m_OverrideState: 1
-    m_Value: 0.113000005
-  cascadeShadowBorder1:
-    m_OverrideState: 1
-    m_Value: 0.31149998
-  cascadeShadowBorder2:
-    m_OverrideState: 1
-    m_Value: 0.5366667
-  cascadeShadowBorder3:
-    m_OverrideState: 1
-    m_Value: 0.7614286
 --- !u!114 &-4896205086614160950
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -522,7 +479,6 @@ MonoBehaviour:
   - {fileID: 7909402785153418962}
   - {fileID: -3260040785472149949}
   - {fileID: -4896205086614160950}
-  - {fileID: -4955338219771770001}
   - {fileID: 7536055297868166178}
   - {fileID: 8077523188636303685}
   - {fileID: -1113373765338005475}
@@ -853,6 +809,9 @@ MonoBehaviour:
   active: 1
   rayBias:
     m_OverrideState: 1
+    m_Value: 0.0275
+  distantRayBias:
+    m_OverrideState: 0
     m_Value: 0.0275
   extendShadowCulling:
     m_OverrideState: 0

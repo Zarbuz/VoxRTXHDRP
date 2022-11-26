@@ -2683,7 +2683,7 @@ PrefabInstance:
     - target: {fileID: 9017514825924090540, guid: 4f4bf91769fbb68418e6fd1f06c5a7a8,
         type: 3}
       propertyPath: customRenderingSettings
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9017514825924090540, guid: 4f4bf91769fbb68418e6fd1f06c5a7a8,
         type: 3}
