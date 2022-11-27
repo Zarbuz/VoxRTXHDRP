@@ -167,24 +167,24 @@ namespace VoxToVFXFramework.Scripts.Data
 							material.alpha = 1f - materialChunk.Alpha;
 							materialChunk.Properties.TryGetValue("_d", out string _d);
 							float.TryParse(_d, NumberStyles.Any, CultureInfo.InvariantCulture, out float density);
-							material.alpha *= density * 10f;
+							material.alpha *= density;
 						}
 						break;
 
 					case MaterialType._blend:
 						{
-							//material.alpha = 1f - materialChunk.Alpha; //No alpha for Blend for now
+							material.alpha = 1f - materialChunk.Alpha;
 							material.metallic = materialChunk.Metal;
 							material.smoothness = materialChunk.Smoothness;
 							material.ior = materialChunk.Ior;
 
-							if (materialChunk.Properties.TryGetValue("_media_type", out string mediaType) && mediaType == "_emit")
+							if (materialChunk.Properties.TryGetValue("_media", out string mediaType) && mediaType == "2")
 							{
 								materialChunk.Properties.TryGetValue("_d", out string _d);
 								float.TryParse(_d, NumberStyles.Any, CultureInfo.InvariantCulture, out float density);
 
 								material.emission = UnityEngine.Color.Lerp(UnityEngine.Color.black, UnityEngine.Color.white, materialChunk.Emit);
-								material.emissionPower = density * 10f;
+								material.emissionPower = density;
 							}
 						}
 

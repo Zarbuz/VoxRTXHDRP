@@ -166,8 +166,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 					HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
 					renderPipeline.ResetPathTracing();
 					RenderWithPathTracing = false;
-
-					//StartCoroutine(DisablePathTracingCo());
 				}
 				else
 				{
@@ -178,24 +176,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 					}
 				}
 			}
-		}
-
-		private IEnumerator DisablePathTracingCo()
-		{
-			Debug.Log("[RuntimeVoxManager] DisablePathTracingCo...");
-			mIsRenderPathTracingLocked = true;
-			RenderWithPathTracing = false;
-			ManualRTASManager.Instance.ClearInstances();
-			//yield return new WaitForSeconds(0.1f);
-			CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
-			yield return new WaitForSeconds(0.1f);
-			HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
-			renderPipeline.ResetPathTracing();
-			yield return new WaitForSeconds(0.1f);
-			VFXManager.FlushEmptyBatches();
-			yield return new WaitForSeconds(0.1f);
-
-			mIsRenderPathTracingLocked = false;
 		}
 
 		private void SaveUpdateVars(bool isAnotherChunk)
@@ -298,7 +278,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			for (int i = 0; i < materials.Length; i++)
 			{
 				VoxelMaterialVFX mat = materials[i];
-				if (mat.alpha == 0)
+				if (mat.alpha == 1)
 				{
 					Materials[i] = new Material(OpaqueMaterial);
 				}
