@@ -18,12 +18,16 @@ namespace VoxToVFXFramework.Scripts.Extensions
 			return new float4(x, y, z, colorIndex);
 		}
 
-		public static uint DecodeChunkIndex(this VoxelVFX voxel)
+		public static VoxelAdditionalData DecodeAdditionalData(this VoxelVFX voxel)
 		{
 			uint rotationIndex = voxel.additionalData >> 16;
 			uint chunkIndex = voxel.additionalData & 0x0000FFFF;
 
-			return chunkIndex;
+			VoxelAdditionalData voxelAdditionalData = new VoxelAdditionalData();
+			voxelAdditionalData.ChunkIndex = (short)chunkIndex;
+			voxelAdditionalData.VoxelFace = (VoxelFace)rotationIndex;
+
+			return voxelAdditionalData;
 			//return $"rotationIndex:{rotationIndex} chunkIndex: {chunkIndex}";
 		}
 

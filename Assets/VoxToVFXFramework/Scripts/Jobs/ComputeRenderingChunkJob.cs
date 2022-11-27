@@ -14,6 +14,7 @@ namespace VoxToVFXFramework.Scripts.Jobs
 		[ReadOnly] public NativeArray<ChunkVFX> Chunks;
 		[ReadOnly] public int LodDistanceLod0;
 		[ReadOnly] public int LodDistanceLod1;
+		[ReadOnly] public int RenderDistance;
 		[ReadOnly] public UnsafeParallelHashMap<int, UnsafeList<VoxelVFX>> Data;
 		[ReadOnly] public Vector3 PlayerPosition;
 		public NativeList<VoxelVFX>.ParallelWriter Buffer;
@@ -26,17 +27,20 @@ namespace VoxToVFXFramework.Scripts.Jobs
 			//	return;
 
 			float distance = Vector3.Distance(PlayerPosition, chunkVFX.CenterWorldPosition);
-			if (distance < LodDistanceLod0 && chunkVFX.LodLevel == 1)
+			if (distance < RenderDistance)
 			{
-				Buffer.AddRangeNoResize(Data[chunkIndex]);
-			}
-			else if (distance >= LodDistanceLod0 && distance < LodDistanceLod1 && chunkVFX.LodLevel == 2)
-			{
-				Buffer.AddRangeNoResize(Data[chunkIndex]);
-			}
-			else if (distance >= LodDistanceLod1 && chunkVFX.LodLevel == 4)
-			{
-				Buffer.AddRangeNoResize(Data[chunkIndex]);
+				if (distance < LodDistanceLod0 && chunkVFX.LodLevel == 1)
+				{
+					Buffer.AddRangeNoResize(Data[chunkIndex]);
+				}
+				else if (distance >= LodDistanceLod0 && distance < LodDistanceLod1 && chunkVFX.LodLevel == 2)
+				{
+					Buffer.AddRangeNoResize(Data[chunkIndex]);
+				}
+				else if (distance >= LodDistanceLod1 && chunkVFX.LodLevel == 4)
+				{
+					Buffer.AddRangeNoResize(Data[chunkIndex]);
+				}
 			}
 
 			//else if ((distance >= LodDistance.w && distance < int.MaxValue && ForcedLevelLod == -1 || ForcedLevelLod == 3) && chunk.LodLevel == 8)

@@ -356,6 +356,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			}
 			int totalActive = Chunks.Count(chunk => chunk.IsActive == 1);
 			int totalLength = Chunks.Where(chunk => chunk.IsActive == 1).Sum(chunk => chunk.Length);
+			int renderDistance = QualityManager.Instance.RenderDistance;
 			NativeList<VoxelVFX> buffer = new NativeList<VoxelVFX>(totalLength, Allocator.TempJob);
 			JobHandle computeRenderingChunkJob = new ComputeRenderingChunkJob()
 			{
@@ -366,6 +367,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 				Chunks = activeChunks,
 				Buffer = buffer.AsParallelWriter(),
 				ChunkIndex = chunkIndex,
+				RenderDistance = renderDistance
 			}.Schedule(totalActive, 64);
 			computeRenderingChunkJob.Complete();
 			activeChunks.Dispose();
@@ -417,8 +419,12 @@ namespace VoxToVFXFramework.Scripts.Managers
 			{
 				CustomFrameSettingsManager.Instance.SetRaytracingActive(true);
 
-				Destroy(mVisualEffect.gameObject);
-				mVisualEffect = null;
+				if (mVisualEffect != null)
+				{
+					Destroy(mVisualEffect.gameObject);
+					mVisualEffect = null;
+				}
+				
 				mGraphicsBuffer?.Release();
 
 				Dictionary<int, List<Matrix4x4>> chunks = new Dictionary<int, List<Matrix4x4>>();
@@ -430,13 +436,51 @@ namespace VoxToVFXFramework.Scripts.Managers
 					{
 						chunks.Add(colorIndex, new List<Matrix4x4>());
 					}
-					uint voxelChunkIndex = voxel.DecodeChunkIndex();
-					ChunkVFX chunk = Chunks[(int)voxelChunkIndex];
+					VoxelAdditionalData additionalData= voxel.DecodeAdditionalData();
+					ChunkVFX chunk = Chunks[additionalData.ChunkIndex];
 
 					Vector3 worldPosition = chunk.WorldPosition + new Vector3(decodedPosition.x, decodedPosition.y, decodedPosition.z);
-					Matrix4x4 matrix = new Matrix4x4();
-					matrix.SetTRS(worldPosition, Quaternion.identity, Vector3.one * chunk.LodLevel);
-					chunks[colorIndex].Add(matrix);
+					if (additionalData.VoxelFace.HasFlag(VoxelFace.Top))
+					{
+						Matrix4x4 matrix = new Matrix4x4();
+						matrix.SetTRS(worldPosition + new Vector3(0,0.5f,0), Quaternion.Euler(90,0,0), Vector3.one * chunk.LodLevel);
+						chunks[colorIndex].Add(matrix);
+					}
+
+					if (additionalData.VoxelFace.HasFlag(VoxelFace.Right))
+					{
+						Matrix4x4 matrix = new Matrix4x4();
+						matrix.SetTRS(worldPosition + new Vector3(0.5f,0,0), Quaternion.Euler(0, -90, 0), Vector3.one * chunk.LodLevel);
+						chunks[colorIndex].Add(matrix);
+					}
+
+					if (additionalData.VoxelFace.HasFlag(VoxelFace.Bottom))
+					{
+						Matrix4x4 matrix = new Matrix4x4();
+						matrix.SetTRS(worldPosition + new Vector3(0,-0.5f,0), Quaternion.Euler(270, 0, 0), Vector3.one * chunk.LodLevel);
+						chunks[colorIndex].Add(matrix);
+					}
+
+					if (additionalData.VoxelFace.HasFlag(VoxelFace.Left))
+					{
+						Matrix4x4 matrix = new Matrix4x4();
+						matrix.SetTRS(worldPosition + new Vector3(-0.5f, 0,0), Quaternion.Euler(0, 90, 0), Vector3.one * chunk.LodLevel);
+						chunks[colorIndex].Add(matrix);
+					}
+
+					if (additionalData.VoxelFace.HasFlag(VoxelFace.Front))
+					{
+						Matrix4x4 matrix = new Matrix4x4();
+						matrix.SetTRS(worldPosition + new Vector3(0, 0, 0.5f), Quaternion.Euler(0, 180, 0), Vector3.one * chunk.LodLevel);
+						chunks[colorIndex].Add(matrix);
+					}
+
+					if (additionalData.VoxelFace.HasFlag(VoxelFace.Back))
+					{
+						Matrix4x4 matrix = new Matrix4x4();
+						matrix.SetTRS(worldPosition + new Vector3(0,0,-0.5f), Quaternion.Euler(0, 0, 0), Vector3.one * chunk.LodLevel);
+						chunks[colorIndex].Add(matrix);
+					}
 				}
 
 				ManualRTASManager.Instance.Build(chunks);

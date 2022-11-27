@@ -49,6 +49,12 @@ namespace VoxToVFXFramework.Scripts.Data
 		public int Length;
 	}
 
+	public struct VoxelAdditionalData
+	{
+		public VoxelFace VoxelFace;
+		public short ChunkIndex;
+	}
+
 	[Flags]
 	public enum VoxelFace : short
 	{
@@ -60,7 +66,6 @@ namespace VoxToVFXFramework.Scripts.Data
 		Front = 16,
 		Back = 32
 	}
-
 
 	public struct VoxelData
 	{
