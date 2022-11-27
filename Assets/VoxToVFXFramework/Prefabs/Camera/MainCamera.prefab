@@ -274,7 +274,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07029a19230420d4bb0c662e14af4a1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  QuadMesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+  CubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &8304410978804376188
 MonoBehaviour:
   m_ObjectHideFlags: 0

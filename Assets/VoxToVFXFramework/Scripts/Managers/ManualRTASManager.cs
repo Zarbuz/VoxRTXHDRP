@@ -14,7 +14,8 @@ namespace VoxToVFXFramework.Scripts.Managers
 	{
 		#region ScriptParameters
 
-		[SerializeField] private Mesh Mesh;
+		[SerializeField] private Mesh QuadMesh;
+		[SerializeField] private Mesh CubeMesh;
 
 		#endregion
 
@@ -93,7 +94,8 @@ namespace VoxToVFXFramework.Scripts.Managers
 				int totalTaken = 0;
 				do
 				{
-					RayTracingMeshInstanceConfig config = new RayTracingMeshInstanceConfig(Mesh, 0, RuntimeVoxManager.Instance.Materials[pair.Key]);
+					Mesh mesh = RuntimeVoxManager.Instance.Materials[pair.Key].color.a == 1 ? CubeMesh : QuadMesh;
+					RayTracingMeshInstanceConfig config = new RayTracingMeshInstanceConfig(mesh, 0, RuntimeVoxManager.Instance.Materials[pair.Key]);
 					List<Matrix4x4> list = pair.Value.Skip(index * MAX_INSTANCES_PER_CONFIG).Take(MAX_INSTANCES_PER_CONFIG).ToList();
 					totalTaken += list.Count;
 					mRtas.AddInstances(config, list);

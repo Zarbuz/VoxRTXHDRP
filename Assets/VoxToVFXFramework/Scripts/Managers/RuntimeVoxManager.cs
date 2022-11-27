@@ -110,7 +110,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		protected override void OnStart()
 		{
 			mCamera = UnityEngine.Camera.main;
-
+			Physics.simulationMode = SimulationMode.Script;
 			AssemblyFileVersionAttribute runtimeVersion = typeof(VoxModel)
 				.GetTypeInfo()
 				.Assembly
@@ -162,9 +162,10 @@ namespace VoxToVFXFramework.Scripts.Managers
 				if (RenderWithPathTracing)
 				{
 					ManualRTASManager.Instance.ClearInstances();
-					CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
 					HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
 					renderPipeline.ResetPathTracing();
+					renderPipeline.EndRecording();
+					CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
 					RenderWithPathTracing = false;
 				}
 				else
@@ -417,8 +418,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		{
 			if (RenderWithPathTracing)
 			{
-				CustomFrameSettingsManager.Instance.SetRaytracingActive(true);
-
+				
 				if (mVisualEffect != null)
 				{
 					Destroy(mVisualEffect.gameObject);
@@ -426,6 +426,11 @@ namespace VoxToVFXFramework.Scripts.Managers
 				}
 				
 				mGraphicsBuffer?.Release();
+
+				CustomFrameSettingsManager.Instance.SetRaytracingActive(true);
+
+				HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
+				renderPipeline.BeginRecording(256, 0);
 
 				Dictionary<int, List<Matrix4x4>> chunks = new Dictionary<int, List<Matrix4x4>>();
 				foreach (VoxelVFX voxel in voxels)
@@ -438,48 +443,57 @@ namespace VoxToVFXFramework.Scripts.Managers
 					}
 					VoxelAdditionalData additionalData= voxel.DecodeAdditionalData();
 					ChunkVFX chunk = Chunks[additionalData.ChunkIndex];
-
 					Vector3 worldPosition = chunk.WorldPosition + new Vector3(decodedPosition.x, decodedPosition.y, decodedPosition.z);
-					if (additionalData.VoxelFace.HasFlag(VoxelFace.Top))
+
+					if (Materials[colorIndex].color.a == 1)
 					{
 						Matrix4x4 matrix = new Matrix4x4();
-						matrix.SetTRS(worldPosition + new Vector3(0,0.5f,0), Quaternion.Euler(90,0,0), Vector3.one * chunk.LodLevel);
+						matrix.SetTRS(worldPosition, Quaternion.identity, Vector3.one * chunk.LodLevel);
 						chunks[colorIndex].Add(matrix);
 					}
-
-					if (additionalData.VoxelFace.HasFlag(VoxelFace.Right))
+					else
 					{
-						Matrix4x4 matrix = new Matrix4x4();
-						matrix.SetTRS(worldPosition + new Vector3(0.5f,0,0), Quaternion.Euler(0, -90, 0), Vector3.one * chunk.LodLevel);
-						chunks[colorIndex].Add(matrix);
-					}
+						if (additionalData.VoxelFace.HasFlag(VoxelFace.Top))
+						{
+							Matrix4x4 matrix = new Matrix4x4();
+							matrix.SetTRS(worldPosition + new Vector3(0, 0.5f, 0), Quaternion.Euler(90, 0, 0), Vector3.one * chunk.LodLevel);
+							chunks[colorIndex].Add(matrix);
+						}
 
-					if (additionalData.VoxelFace.HasFlag(VoxelFace.Bottom))
-					{
-						Matrix4x4 matrix = new Matrix4x4();
-						matrix.SetTRS(worldPosition + new Vector3(0,-0.5f,0), Quaternion.Euler(270, 0, 0), Vector3.one * chunk.LodLevel);
-						chunks[colorIndex].Add(matrix);
-					}
+						if (additionalData.VoxelFace.HasFlag(VoxelFace.Right))
+						{
+							Matrix4x4 matrix = new Matrix4x4();
+							matrix.SetTRS(worldPosition + new Vector3(0.5f, 0, 0), Quaternion.Euler(0, -90, 0), Vector3.one * chunk.LodLevel);
+							chunks[colorIndex].Add(matrix);
+						}
 
-					if (additionalData.VoxelFace.HasFlag(VoxelFace.Left))
-					{
-						Matrix4x4 matrix = new Matrix4x4();
-						matrix.SetTRS(worldPosition + new Vector3(-0.5f, 0,0), Quaternion.Euler(0, 90, 0), Vector3.one * chunk.LodLevel);
-						chunks[colorIndex].Add(matrix);
-					}
+						if (additionalData.VoxelFace.HasFlag(VoxelFace.Bottom))
+						{
+							Matrix4x4 matrix = new Matrix4x4();
+							matrix.SetTRS(worldPosition + new Vector3(0, -0.5f, 0), Quaternion.Euler(270, 0, 0), Vector3.one * chunk.LodLevel);
+							chunks[colorIndex].Add(matrix);
+						}
 
-					if (additionalData.VoxelFace.HasFlag(VoxelFace.Front))
-					{
-						Matrix4x4 matrix = new Matrix4x4();
-						matrix.SetTRS(worldPosition + new Vector3(0, 0, 0.5f), Quaternion.Euler(0, 180, 0), Vector3.one * chunk.LodLevel);
-						chunks[colorIndex].Add(matrix);
-					}
+						if (additionalData.VoxelFace.HasFlag(VoxelFace.Left))
+						{
+							Matrix4x4 matrix = new Matrix4x4();
+							matrix.SetTRS(worldPosition + new Vector3(-0.5f, 0, 0), Quaternion.Euler(0, 90, 0), Vector3.one * chunk.LodLevel);
+							chunks[colorIndex].Add(matrix);
+						}
 
-					if (additionalData.VoxelFace.HasFlag(VoxelFace.Back))
-					{
-						Matrix4x4 matrix = new Matrix4x4();
-						matrix.SetTRS(worldPosition + new Vector3(0,0,-0.5f), Quaternion.Euler(0, 0, 0), Vector3.one * chunk.LodLevel);
-						chunks[colorIndex].Add(matrix);
+						if (additionalData.VoxelFace.HasFlag(VoxelFace.Front))
+						{
+							Matrix4x4 matrix = new Matrix4x4();
+							matrix.SetTRS(worldPosition + new Vector3(0, 0, 0.5f), Quaternion.Euler(0, 180, 0), Vector3.one * chunk.LodLevel);
+							chunks[colorIndex].Add(matrix);
+						}
+
+						if (additionalData.VoxelFace.HasFlag(VoxelFace.Back))
+						{
+							Matrix4x4 matrix = new Matrix4x4();
+							matrix.SetTRS(worldPosition + new Vector3(0, 0, -0.5f), Quaternion.Euler(0, 0, 0), Vector3.one * chunk.LodLevel);
+							chunks[colorIndex].Add(matrix);
+						}
 					}
 				}
 
