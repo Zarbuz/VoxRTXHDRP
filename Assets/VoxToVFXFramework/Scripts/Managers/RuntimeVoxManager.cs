@@ -60,6 +60,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private static readonly int mMetallic = Shader.PropertyToID("_Metallic");
 		private static readonly int mSmoothness = Shader.PropertyToID("_Smoothness");
 		private static readonly int mEmissiveExposureWeight = Shader.PropertyToID("_EmissiveExposureWeight");
+		private static readonly int mIor = Shader.PropertyToID("_Ior");
 
 		#endregion
 
@@ -304,6 +305,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 				else
 				{
 					Materials[i] = new Material(TransparentMaterial);
+					Materials[i].SetFloat(mIor, mat.ior);
 				}
 
 				Materials[i].color = new Color(mat.color.r, mat.color.g, mat.color.b, mat.alpha);

@@ -67,8 +67,8 @@ namespace VoxToVFXFramework.Scripts.Data
 					keys.Dispose();
 					onChunkLoadedFinished?.Invoke();
 				}
-			}); 
-		
+			});
+
 		}
 
 		public void Dispose()
@@ -154,19 +154,21 @@ namespace VoxToVFXFramework.Scripts.Data
 					case MaterialType._glass:
 						material.alpha = 1f - materialChunk.Alpha;
 						material.smoothness = materialChunk.Smoothness;
+						material.ior = materialChunk.Ior;
 						break;
 					case MaterialType._emit:
 						material.emission = UnityEngine.Color.Lerp(UnityEngine.Color.black, UnityEngine.Color.white, materialChunk.Emit);
 						material.emissionPower = Mathf.Lerp(2f, 12f, materialChunk.Flux / 4f);
+						material.ior = materialChunk.Ior;
 						break;
 					case MaterialType._media:
 						{
+							material.ior = materialChunk.Ior;
 							material.alpha = 1f - materialChunk.Alpha;
 							materialChunk.Properties.TryGetValue("_d", out string _d);
 							float.TryParse(_d, NumberStyles.Any, CultureInfo.InvariantCulture, out float density);
 							material.alpha *= density * 10f;
 						}
-
 						break;
 
 					case MaterialType._blend:
@@ -174,6 +176,8 @@ namespace VoxToVFXFramework.Scripts.Data
 							//material.alpha = 1f - materialChunk.Alpha; //No alpha for Blend for now
 							material.metallic = materialChunk.Metal;
 							material.smoothness = materialChunk.Smoothness;
+							material.ior = materialChunk.Ior;
+
 							if (materialChunk.Properties.TryGetValue("_media_type", out string mediaType) && mediaType == "_emit")
 							{
 								materialChunk.Properties.TryGetValue("_d", out string _d);
@@ -194,9 +198,9 @@ namespace VoxToVFXFramework.Scripts.Data
 			Materials = materials;
 		}
 
-		
-		
-		
+
+
+
 		private static UnsafeParallelHashMap<int, VoxelData> ComputeLod(UnsafeParallelHashMap<int, VoxelData> data, int3 worldChunkPosition, int step, int moduloCheck)
 		{
 			UnsafeParallelHashMap<int, VoxelData> resultLod1 = new UnsafeParallelHashMap<int, VoxelData>(data.Count(), Allocator.Persistent);

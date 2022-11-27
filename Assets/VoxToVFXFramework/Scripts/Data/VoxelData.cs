@@ -24,6 +24,7 @@ namespace VoxToVFXFramework.Scripts.Data
 		public Color emission;
 		public float emissionPower;
 		public float alpha;
+		public float ior;
 	}
 
 	[VFXType(VFXTypeAttribute.Usage.GraphicsBuffer)]
