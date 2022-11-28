@@ -71,57 +71,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 			DepthOfField.focusMode = new DepthOfFieldModeParameter(DepthOfFieldMode.Manual);
 		}
 
-		public void SetQualityLevel(int index)
-		{
-			ScalableSettingLevelParameter scalableSettingLevelParameter;
-			switch (index)
-			{
-				case 0:
-					scalableSettingLevelParameter = new ScalableSettingLevelParameter((int)ScalableSettingLevelParameter.Level.High, false, true);
-					break;
-				case 1:
-					scalableSettingLevelParameter = new ScalableSettingLevelParameter((int)ScalableSettingLevelParameter.Level.Medium, false, true);
-					break;
-				case 2:
-					scalableSettingLevelParameter = new ScalableSettingLevelParameter((int)ScalableSettingLevelParameter.Level.Low, false, true);
-					break;
-				default:
-					scalableSettingLevelParameter = new ScalableSettingLevelParameter((int)ScalableSettingLevelParameter.Level.High, false, true);
-					break;
-
-			}
-
-			if (mVolume.profile.TryGet(typeof(ScreenSpaceAmbientOcclusion), out ScreenSpaceAmbientOcclusion ambientOcclusion))
-			{
-				ambientOcclusion.quality = scalableSettingLevelParameter;
-			}
-
-			if (mVolume.profile.TryGet(typeof(Fog), out Fog fog))
-			{
-				fog.quality = scalableSettingLevelParameter;
-			}
-
-			if (mVolume.profile.TryGet(typeof(GlobalIllumination), out GlobalIllumination globalIllumination))
-			{
-				globalIllumination.quality = scalableSettingLevelParameter;
-			}
-
-			if (mVolume.profile.TryGet(typeof(Bloom), out Bloom bloom))
-			{
-				bloom.quality = scalableSettingLevelParameter;
-			}
-
-			if (mVolume.profile.TryGet(typeof(ScreenSpaceReflection), out ScreenSpaceReflection screenSpaceReflection))
-			{
-				screenSpaceReflection.quality = scalableSettingLevelParameter;
-			}
-
-			if (mVolume.profile.TryGet(typeof(DepthOfField), out DepthOfField depthOfField))
-			{
-				depthOfField.quality = scalableSettingLevelParameter;
-			}
-		}
-
 		#endregion
 
 		#region PrivateMethods
