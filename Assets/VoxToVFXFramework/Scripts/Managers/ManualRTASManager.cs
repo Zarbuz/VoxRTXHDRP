@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -57,7 +58,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		#region PublicMethods
 
-		public void Build(Dictionary<int, List<Matrix4x4>> chunks)
+		public void Build(NativeParallelMultiHashMap<int, Matrix4x4> chunks)
 		{
 			Debug.Log("[ManualRTASManager] Build");
 
@@ -88,19 +89,34 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 			//mRtas.CullInstances(ref cullingConfig);
 
-			foreach (KeyValuePair<int, List<Matrix4x4>> pair in chunks)
+			for (int i = 0; i < 255; i++)
 			{
-				int index = 0;
-				int totalTaken = 0;
-				do
+				if (!chunks.ContainsKey(i))
 				{
-					Mesh mesh = RuntimeVoxManager.Instance.Materials[pair.Key].color.a == 1 ? CubeMesh : QuadMesh;
-					RayTracingMeshInstanceConfig config = new RayTracingMeshInstanceConfig(mesh, 0, RuntimeVoxManager.Instance.Materials[pair.Key]);
-					List<Matrix4x4> list = pair.Value.Skip(index * MAX_INSTANCES_PER_CONFIG).Take(MAX_INSTANCES_PER_CONFIG).ToList();
-					totalTaken += list.Count;
-					mRtas.AddInstances(config, list);
-					index++;
-				} while (totalTaken != pair.Value.Count);
+					continue;
+				}
+
+				Mesh mesh = RuntimeVoxManager.Instance.Materials[i].color.a == 1 ? CubeMesh : QuadMesh;
+				RayTracingMeshInstanceConfig config = new RayTracingMeshInstanceConfig(mesh, 0, RuntimeVoxManager.Instance.Materials[i]);
+
+				NativeParallelMultiHashMap<int, Matrix4x4>.Enumerator enumerator = chunks.GetValuesForKey(i);
+				NativeList<Matrix4x4> list = new NativeList<Matrix4x4>(Allocator.Temp);
+				foreach (Matrix4x4 matrix in enumerator)
+				{
+					if (list.Length < MAX_INSTANCES_PER_CONFIG)
+					{
+						list.Add(matrix);
+					}
+					else
+					{
+						mRtas.AddInstances(config, list.AsArray());
+						list.Clear();
+					}
+				}
+
+				mRtas.AddInstances(config, list.AsArray());
+				list.Dispose();
+				enumerator.Dispose();
 			}
 
 			// Build the RTAS

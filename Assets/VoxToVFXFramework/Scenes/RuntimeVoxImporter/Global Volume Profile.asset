@@ -218,22 +218,6 @@ MonoBehaviour:
   screenFadeDistance:
     m_OverrideState: 1
     m_Value: 0.056
---- !u!114 &-5029249562010289309
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f1984a7ac01bf84b86559f7595cdc68, type: 3}
-  m_Name: LightCluster
-  m_EditorClassIdentifier: 
-  active: 1
-  cameraClusterRange:
-    m_OverrideState: 1
-    m_Value: 50
 --- !u!114 &-4896205086614160950
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -485,8 +469,8 @@ MonoBehaviour:
   - {fileID: -8412776205660526614}
   - {fileID: 3247282485786874571}
   - {fileID: -8619802448483155579}
-  - {fileID: -5029249562010289309}
   - {fileID: 110502353898105081}
+  - {fileID: 5067294641485024127}
 --- !u!114 &110502353898105081
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -622,6 +606,22 @@ MonoBehaviour:
   opacity:
     m_OverrideState: 0
     m_Value: 1
+--- !u!114 &5067294641485024127
+MonoBehaviour:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f1984a7ac01bf84b86559f7595cdc68, type: 3}
+  m_Name: LightCluster
+  m_EditorClassIdentifier: 
+  active: 1
+  cameraClusterRange:
+    m_OverrideState: 0
+    m_Value: 10
 --- !u!114 &6916673117835096868
 MonoBehaviour:
   m_ObjectHideFlags: 3

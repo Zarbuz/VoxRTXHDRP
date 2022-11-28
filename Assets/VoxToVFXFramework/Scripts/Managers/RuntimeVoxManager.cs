@@ -24,6 +24,7 @@ using VoxToVFXFramework.Scripts.Jobs;
 using VoxToVFXFramework.Scripts.ScriptableObjects;
 using VoxToVFXFramework.Scripts.Singleton;
 using VoxToVFXFramework.Scripts.UI;
+using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 using Plane = UnityEngine.Plane;
 
 namespace VoxToVFXFramework.Scripts.Managers
@@ -33,7 +34,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		#region SerializeFields
 
 		[SerializeField] private VisualEffect VisualEffectItemPrefab;
-		[SerializeField] private VFXListAsset VFXListAsset;
+		//[SerializeField] private VFXListAsset VFXListAsset;
 		[SerializeField] private bool ShowOnlyActiveChunkGizmos;
 		[SerializeField] private Transform FreeCameraTransform;
 		[SerializeField] private Material TransparentMaterial;
@@ -85,6 +86,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		[HideInInspector] public NativeArray<ChunkVFX> Chunks;
 
+		private NativeArray<bool> mMaterialAlpha;
 		private Transform PlayerPosition => FreeCameraTransform;
 		private UnsafeParallelHashMap<int, UnsafeList<VoxelVFX>> mChunksLoaded;
 		private VisualEffect mVisualEffect;
@@ -164,7 +166,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 					ManualRTASManager.Instance.ClearInstances();
 					HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
 					renderPipeline.ResetPathTracing();
-					renderPipeline.EndRecording();
 					CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
 					RenderWithPathTracing = false;
 				}
@@ -256,6 +257,10 @@ namespace VoxToVFXFramework.Scripts.Managers
 				Chunks.Dispose();
 			}
 
+			if (mMaterialAlpha.IsCreated)
+			{
+				mMaterialAlpha.Dispose();
+			}
 
 			if (mChunksLoaded.IsCreated)
 			{
@@ -275,10 +280,12 @@ namespace VoxToVFXFramework.Scripts.Managers
 			mPaletteBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, materials.Length, Marshal.SizeOf(typeof(VoxelMaterialVFX)));
 			mPaletteBuffer.SetData(materials);
 
+			mMaterialAlpha = new NativeArray<bool>(materials.Length, Allocator.Persistent);
 			Materials = new Material[materials.Length];
 			for (int i = 0; i < materials.Length; i++)
 			{
 				VoxelMaterialVFX mat = materials[i];
+				mMaterialAlpha[i] = mat.alpha == 1;
 				if (mat.alpha == 1)
 				{
 					Materials[i] = new Material(OpaqueMaterial);
@@ -418,86 +425,30 @@ namespace VoxToVFXFramework.Scripts.Managers
 		{
 			if (RenderWithPathTracing)
 			{
-				
+
 				if (mVisualEffect != null)
 				{
 					Destroy(mVisualEffect.gameObject);
 					mVisualEffect = null;
 				}
-				
+
 				mGraphicsBuffer?.Release();
 
 				CustomFrameSettingsManager.Instance.SetRaytracingActive(true);
 
-				HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
-				renderPipeline.BeginRecording(256, 0);
+				NativeParallelMultiHashMap<int, Matrix4x4> chunks = new NativeParallelMultiHashMap<int, Matrix4x4>(voxels.Length * 6, Allocator.TempJob);
 
-				Dictionary<int, List<Matrix4x4>> chunks = new Dictionary<int, List<Matrix4x4>>();
-				foreach (VoxelVFX voxel in voxels)
+				JobHandle computePathTracingDataJob = new ComputePathTracingDataJob()
 				{
-					float4 decodedPosition = voxel.DecodePosition();
-					int colorIndex = (int)decodedPosition.w;
-					if (!chunks.ContainsKey(colorIndex))
-					{
-						chunks.Add(colorIndex, new List<Matrix4x4>());
-					}
-					VoxelAdditionalData additionalData= voxel.DecodeAdditionalData();
-					ChunkVFX chunk = Chunks[additionalData.ChunkIndex];
-					Vector3 worldPosition = chunk.WorldPosition + new Vector3(decodedPosition.x, decodedPosition.y, decodedPosition.z);
-
-					if (Materials[colorIndex].color.a == 1)
-					{
-						Matrix4x4 matrix = new Matrix4x4();
-						matrix.SetTRS(worldPosition, Quaternion.identity, Vector3.one * chunk.LodLevel);
-						chunks[colorIndex].Add(matrix);
-					}
-					else
-					{
-						if (additionalData.VoxelFace.HasFlag(VoxelFace.Top))
-						{
-							Matrix4x4 matrix = new Matrix4x4();
-							matrix.SetTRS(worldPosition + new Vector3(0, 0.5f, 0), Quaternion.Euler(90, 0, 0), Vector3.one * chunk.LodLevel);
-							chunks[colorIndex].Add(matrix);
-						}
-
-						if (additionalData.VoxelFace.HasFlag(VoxelFace.Right))
-						{
-							Matrix4x4 matrix = new Matrix4x4();
-							matrix.SetTRS(worldPosition + new Vector3(0.5f, 0, 0), Quaternion.Euler(0, -90, 0), Vector3.one * chunk.LodLevel);
-							chunks[colorIndex].Add(matrix);
-						}
-
-						if (additionalData.VoxelFace.HasFlag(VoxelFace.Bottom))
-						{
-							Matrix4x4 matrix = new Matrix4x4();
-							matrix.SetTRS(worldPosition + new Vector3(0, -0.5f, 0), Quaternion.Euler(270, 0, 0), Vector3.one * chunk.LodLevel);
-							chunks[colorIndex].Add(matrix);
-						}
-
-						if (additionalData.VoxelFace.HasFlag(VoxelFace.Left))
-						{
-							Matrix4x4 matrix = new Matrix4x4();
-							matrix.SetTRS(worldPosition + new Vector3(-0.5f, 0, 0), Quaternion.Euler(0, 90, 0), Vector3.one * chunk.LodLevel);
-							chunks[colorIndex].Add(matrix);
-						}
-
-						if (additionalData.VoxelFace.HasFlag(VoxelFace.Front))
-						{
-							Matrix4x4 matrix = new Matrix4x4();
-							matrix.SetTRS(worldPosition + new Vector3(0, 0, 0.5f), Quaternion.Euler(0, 180, 0), Vector3.one * chunk.LodLevel);
-							chunks[colorIndex].Add(matrix);
-						}
-
-						if (additionalData.VoxelFace.HasFlag(VoxelFace.Back))
-						{
-							Matrix4x4 matrix = new Matrix4x4();
-							matrix.SetTRS(worldPosition + new Vector3(0, 0, -0.5f), Quaternion.Euler(0, 0, 0), Vector3.one * chunk.LodLevel);
-							chunks[colorIndex].Add(matrix);
-						}
-					}
-				}
+					Data = voxels,
+					Chunks = Chunks,
+					MaterialAlpha = mMaterialAlpha,
+					Result = chunks.AsParallelWriter()
+				}.Schedule(voxels.Length, 64);
+				computePathTracingDataJob.Complete();
 
 				ManualRTASManager.Instance.Build(chunks);
+				chunks.Dispose();
 			}
 			else
 			{
@@ -506,7 +457,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 					mVisualEffect = Instantiate(VisualEffectItemPrefab);
 					mVisualEffect.enabled = true;
 				}
-				mVisualEffect.visualEffectAsset = GetVisualEffectAsset(voxels.Length);
+				//mVisualEffect.visualEffectAsset = GetVisualEffectAsset(voxels.Length);
 				mVisualEffect.Reinit();
 
 				mGraphicsBuffer?.Release();
@@ -525,19 +476,19 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		}
 
-		private VisualEffectAsset GetVisualEffectAsset(int voxelCount)
-		{
-			int index = voxelCount / STEP_CAPACITY;
-			if (index >= VFXListAsset.VisualEffectAssets.Count)
-			{
-				index = VFXListAsset.VisualEffectAssets.Count - 1;
-				Debug.LogWarningFormat("[RuntimeVoxManager] index {0} is greater than the max visual effect assets count: {1}", index, VFXListAsset.VisualEffectAssets.Count);
-			}
+		//private VisualEffectAsset GetVisualEffectAsset(int voxelCount)
+		//{
+		//	int index = voxelCount / STEP_CAPACITY;
+		//	if (index >= VFXListAsset.VisualEffectAssets.Count)
+		//	{
+		//		index = VFXListAsset.VisualEffectAssets.Count - 1;
+		//		Debug.LogWarningFormat("[RuntimeVoxManager] index {0} is greater than the max visual effect assets count: {1}", index, VFXListAsset.VisualEffectAssets.Count);
+		//	}
 
-			VisualEffectAsset asset = VFXListAsset.VisualEffectAssets[index];
-			//Debug.Log("[RuntimeVoxManager] Selected VisualEffectAsset: " + asset.name);
-			return asset;
-		}
+		//	VisualEffectAsset asset = VFXListAsset.VisualEffectAssets[index];
+		//	//Debug.Log("[RuntimeVoxManager] Selected VisualEffectAsset: " + asset.name);
+		//	return asset;
+		//}
 
 		private int GetPlayerCurrentChunkIndex(Vector3 position)
 		{
