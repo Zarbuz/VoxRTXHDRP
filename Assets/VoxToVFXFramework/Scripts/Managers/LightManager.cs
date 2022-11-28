@@ -12,12 +12,17 @@ public class LightManager : ModuleSingleton<LightManager>
 
 	protected override void OnAwake()
 	{
-		mLight = FindObjectOfType<Light>();
+		mLight = FindFirstObjectByType<Light>();
 	}
 
 	#endregion
 
 	#region PublicMethods
+
+	public void SetMainLightActive(bool active)
+	{
+		mLight.gameObject.SetActive(active);
+	}
 
 	public Vector3 GetCurrentRotation()
 	{

@@ -30,15 +30,12 @@ namespace VoxToVFXFramework.Scripts.Managers
 		public bool IsDepthOfFieldActive { get; protected set; }
 		public int RenderDistance { get; protected set; }
 
-		private HDAdditionalLightData mDirectionalLight;
 		#endregion
 
 		#region PublicMethods
 
 		public void Initialize()
 		{
-			mDirectionalLight = SceneUtils.FindObjectOfType<HDAdditionalLightData>();
-
 			CurrentResolutionScaler = PlayerPrefs.GetFloat(RESOLUTION_SCALER_KEY, 1);
 			SetDynamicResolution(CurrentResolutionScaler);
 

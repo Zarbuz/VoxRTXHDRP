@@ -72,6 +72,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		public Material[] Materials { get; private set; }
 		public bool RenderWithPathTracing { get; set; }
+		public bool ForceRefreshRender { get; set; }
 		public Vector2 MinMaxX { get; set; }
 		public Vector2 MinMaxY { get; set; }
 		public Vector2 MinMaxZ { get; set; }
@@ -102,7 +103,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private UnityEngine.Camera mCamera;
 		private Quaternion mPreviousRotation;
 		private float mPreviousCheckTimer;
-		private bool mIsRenderPathTracingLocked;
 		private bool mIsRenderFinished;
 
 		#endregion
@@ -120,7 +120,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 			Debug.Log("FileToVoxCore version: " + runtimeVersion.Version);
 			QualityManager.Instance.Initialize();
-
+			LightManager.Instance.SetMainLightActive(false);
 			ExposureWeight.OnValueChanged += RefreshExposureWeight;
 			DebugLod.OnValueChanged += RefreshDebugLod;
 
@@ -154,29 +154,20 @@ namespace VoxToVFXFramework.Scripts.Managers
 			if (Keyboard.current.rKey.wasPressedThisFrame && !RenderWithPathTracing && mIsRenderFinished)
 			{
 				RenderWithPathTracing = true;
-				SaveUpdateVars(isAnotherChunk);
 				RefreshChunksToRender();
 				return;
 			}
 
-			if (isAnotherChunk || angle > MIN_DIFF_ANGLE_CAMERA && mPreviousCheckTimer >= MIN_TIMER_CHECK_CAMERA)
+			if (RenderWithPathTracing)
 			{
-				if (RenderWithPathTracing)
-				{
-					ManualRTASManager.Instance.ClearInstances();
-					HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
-					renderPipeline.ResetPathTracing();
-					CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
-					RenderWithPathTracing = false;
-				}
-				else
-				{
-					if (!mIsRenderPathTracingLocked)
-					{
-						SaveUpdateVars(isAnotherChunk);
-						RefreshChunksToRender();
-					}
-				}
+				return;
+			}
+
+			if (isAnotherChunk || ForceRefreshRender|| angle > MIN_DIFF_ANGLE_CAMERA && mPreviousCheckTimer >= MIN_TIMER_CHECK_CAMERA)
+			{
+				ForceRefreshRender = false;
+				SaveUpdateVars(isAnotherChunk);
+				RefreshChunksToRender();
 			}
 		}
 
@@ -435,6 +426,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 				mGraphicsBuffer?.Release();
 
 				CustomFrameSettingsManager.Instance.SetRaytracingActive(true);
+				LightManager.Instance.SetMainLightActive(true);
 
 				NativeParallelMultiHashMap<int, Matrix4x4> chunks = new NativeParallelMultiHashMap<int, Matrix4x4>(voxels.Length * 6, Allocator.TempJob);
 

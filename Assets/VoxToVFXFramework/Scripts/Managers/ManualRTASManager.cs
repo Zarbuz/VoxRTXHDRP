@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Unity.Collections;
+﻿using Unity.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
-using UnityEngine.VFX;
 using VoxToVFXFramework.Scripts.Singleton;
 
 namespace VoxToVFXFramework.Scripts.Managers
@@ -30,6 +27,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		private RayTracingAccelerationStructure mRtas;
 		private HDCamera mHdCamera;
+		private bool mRender;
 
 		#endregion
 
@@ -48,9 +46,20 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		private void Update()
 		{
-			if (Keyboard.current.oKey.wasPressedThisFrame)
+			if (Keyboard.current.oKey.wasPressedThisFrame && RuntimeVoxManager.Instance.RenderWithPathTracing)
 			{
 				ClearInstances();
+				HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
+				renderPipeline.ResetPathTracing();
+				LightManager.Instance.SetMainLightActive(false);
+				CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
+				RuntimeVoxManager.Instance.RenderWithPathTracing = false;
+				RuntimeVoxManager.Instance.ForceRefreshRender = true;
+			}
+			
+			if (mRender)
+			{
+				mRtas.Build(transform.position);
 			}
 		}
 
@@ -124,12 +133,14 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 			// Assign it to the camera
 			mHdCamera.rayTracingAccelerationStructure = mRtas;
+			mRender = true;
 		}
 
 		public void ClearInstances()
 		{
 			Debug.Log("[ManualRTASManager] ClearInstances");
 			mRtas.ClearInstances();
+			mRender = false;
 			//mRtas.Build(transform.position);
 
 			mHdCamera.rayTracingAccelerationStructure = null;
