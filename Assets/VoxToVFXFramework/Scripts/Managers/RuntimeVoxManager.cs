@@ -1,30 +1,23 @@
 ﻿using FileToVoxCore.Utils;
 using FileToVoxCore.Vox;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
-using Unity.Mathematics;
 using UnityEditor.Rendering.HighDefinition;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using UnityEngine.VFX;
 using VoxToVFXFramework.Scripts.Core;
 using VoxToVFXFramework.Scripts.Data;
-using VoxToVFXFramework.Scripts.Extensions;
 using VoxToVFXFramework.Scripts.Importer;
 using VoxToVFXFramework.Scripts.Jobs;
-using VoxToVFXFramework.Scripts.ScriptableObjects;
 using VoxToVFXFramework.Scripts.Singleton;
 using VoxToVFXFramework.Scripts.UI;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 using Plane = UnityEngine.Plane;
 
 namespace VoxToVFXFramework.Scripts.Managers
@@ -70,7 +63,8 @@ namespace VoxToVFXFramework.Scripts.Managers
 		public event Action LoadFinishedCallback;
 		public event Action UnloadFinishedCallback;
 
-		public Material[] Materials { get; private set; }
+		public Material[] Materials;
+
 		public bool RenderWithPathTracing { get; set; }
 		public bool ForceRefreshRender { get; set; }
 		public Vector2 MinMaxX { get; set; }
@@ -284,9 +278,13 @@ namespace VoxToVFXFramework.Scripts.Managers
 				else
 				{
 					Materials[i] = new Material(TransparentMaterial);
-					Materials[i].SetFloat(mIor, mat.ior);
+
+					//ior values from MV are between 0 and 2, Unity expect value between 1 and 2.5
+					float ior = mat.ior * 1.5f / 2f + 1;
+					Materials[i].SetFloat(mIor, ior);
 				}
 
+				Materials[i].name = "mat-" + i;
 				Materials[i].color = new Color(mat.color.r, mat.color.g, mat.color.b, mat.alpha);
 				Materials[i].SetFloat(mMetallic, mat.metallic);
 				Materials[i].SetFloat(mSmoothness, mat.smoothness);
