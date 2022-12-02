@@ -55,6 +55,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private static readonly int mSmoothness = Shader.PropertyToID("_Smoothness");
 		private static readonly int mEmissiveExposureWeight = Shader.PropertyToID("_EmissiveExposureWeight");
 		private static readonly int mIor = Shader.PropertyToID("_Ior");
+		private static readonly int mTransmittanceColor = Shader.PropertyToID("_TransmittanceColor");
 
 		#endregion
 
@@ -257,6 +258,20 @@ namespace VoxToVFXFramework.Scripts.Managers
 				mChunksLoaded.Dispose();
 			}
 
+			if (Materials != null)
+			{
+				foreach (Material mat in Materials)
+				{
+					Destroy(mat);
+				}
+			}
+
+			Materials = null;
+			if (ManualRTASManager.Instance != null)
+			{
+				ManualRTASManager.Instance.DisablePathTracing();
+			}
+
 			UnloadFinishedCallback?.Invoke();
 		}
 
@@ -274,18 +289,19 @@ namespace VoxToVFXFramework.Scripts.Managers
 				if (mat.alpha == 1)
 				{
 					Materials[i] = new Material(OpaqueMaterial);
+					Materials[i].color = new Color(mat.color.r, mat.color.g, mat.color.b);
 				}
 				else
 				{
 					Materials[i] = new Material(TransparentMaterial);
-
+					Materials[i].color = new Color(0, 0, 0, mat.alpha);
 					//ior values from MV are between 0 and 2, Unity expect value between 1 and 2.5
 					float ior = mat.ior * 1.5f / 2f + 1;
 					Materials[i].SetFloat(mIor, ior);
+					Materials[i].SetColor(mTransmittanceColor, mat.color);
 				}
 
 				Materials[i].name = "mat-" + i;
-				Materials[i].color = new Color(mat.color.r, mat.color.g, mat.color.b, mat.alpha);
 				Materials[i].SetFloat(mMetallic, mat.metallic);
 				Materials[i].SetFloat(mSmoothness, mat.smoothness);
 				Materials[i].SetFloat(mEmissiveExposureWeight, 0);

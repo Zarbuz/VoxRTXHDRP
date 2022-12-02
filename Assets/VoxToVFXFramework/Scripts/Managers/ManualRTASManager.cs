@@ -48,13 +48,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		{
 			if (Keyboard.current.oKey.wasPressedThisFrame && RuntimeVoxManager.Instance.RenderWithPathTracing)
 			{
-				ClearInstances();
-				HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
-				renderPipeline.ResetPathTracing();
-				LightManager.Instance.SetMainLightActive(false);
-				CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
-				RuntimeVoxManager.Instance.RenderWithPathTracing = false;
-				RuntimeVoxManager.Instance.ForceRefreshRender = true;
+				DisablePathTracing();
 			}
 			
 			if (mRender)
@@ -66,6 +60,17 @@ namespace VoxToVFXFramework.Scripts.Managers
 		#endregion
 
 		#region PublicMethods
+
+		public void DisablePathTracing()
+		{
+			ClearInstances();
+			HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
+			renderPipeline?.ResetPathTracing();
+			LightManager.Instance.SetMainLightActive(false);
+			CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
+			RuntimeVoxManager.Instance.RenderWithPathTracing = false;
+			RuntimeVoxManager.Instance.ForceRefreshRender = true;
+		}
 
 		public void Build(NativeParallelMultiHashMap<int, Matrix4x4> chunks)
 		{
@@ -136,7 +141,12 @@ namespace VoxToVFXFramework.Scripts.Managers
 			mRender = true;
 		}
 
-		public void ClearInstances()
+
+		#endregion
+
+		#region PrivateMethods
+
+		private void ClearInstances()
 		{
 			Debug.Log("[ManualRTASManager] ClearInstances");
 			mRtas.ClearInstances();
@@ -145,6 +155,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 			mHdCamera.rayTracingAccelerationStructure = null;
 		}
+
 		#endregion
 	}
 }

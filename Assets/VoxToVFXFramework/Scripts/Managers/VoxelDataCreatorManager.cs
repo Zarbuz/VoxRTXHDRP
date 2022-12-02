@@ -108,7 +108,6 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 
 	public void ReadZipFile(string inputPath)
 	{
-		RuntimeVoxManager.Instance.Release();
 		string checksum = GetMd5Checksum(inputPath);
 		string voxCache = Path.Combine(Application.persistentDataPath, VOX_FOLDER_CACHE_NAME);
 
