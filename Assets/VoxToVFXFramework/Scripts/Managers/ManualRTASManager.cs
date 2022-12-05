@@ -36,7 +36,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 		protected override void OnStart()
 		{
 			mHdCamera = HDCamera.GetOrCreate(GetComponent<UnityEngine.Camera>());
-			mRtas ??= new RayTracingAccelerationStructure();
+			mRtas = new RayTracingAccelerationStructure();
 		}
 
 		private void OnDestroy()
@@ -82,26 +82,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 				return;
 			}
 
-			mRtas = new RayTracingAccelerationStructure();
-
-			//RayTracingInstanceCullingConfig cullingConfig = new RayTracingInstanceCullingConfig();
-
-			//cullingConfig.subMeshFlagsConfig.opaqueMaterials = RayTracingSubMeshFlags.Enabled | RayTracingSubMeshFlags.ClosestHitOnly;
-			//cullingConfig.subMeshFlagsConfig.alphaTestedMaterials = RayTracingSubMeshFlags.Enabled;
-			//cullingConfig.subMeshFlagsConfig.transparentMaterials = RayTracingSubMeshFlags.Disabled;
-
-			//RayTracingInstanceCullingTest cullingTest = new RayTracingInstanceCullingTest();
-			//cullingTest.allowAlphaTestedMaterials = true;
-			//cullingTest.allowOpaqueMaterials = true;
-			//cullingTest.allowTransparentMaterials = false;
-			//cullingTest.instanceMask = 255;
-			//cullingTest.layerMask = -1;
-			//cullingTest.shadowCastingModeMask = -1;
-
-			//cullingConfig.instanceTests = new RayTracingInstanceCullingTest[1];
-			//cullingConfig.instanceTests[0] = cullingTest;
-
-			//mRtas.CullInstances(ref cullingConfig);
+			ClearInstances();
 
 			for (int i = 0; i < 255; i++)
 			{

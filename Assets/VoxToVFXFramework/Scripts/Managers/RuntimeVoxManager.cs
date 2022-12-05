@@ -153,10 +153,10 @@ namespace VoxToVFXFramework.Scripts.Managers
 				return;
 			}
 
-			if (RenderWithPathTracing)
-			{
-				return;
-			}
+			//if (RenderWithPathTracing)
+			//{
+			//	return;
+			//}
 
 			if (isAnotherChunk || ForceRefreshRender|| angle > MIN_DIFF_ANGLE_CAMERA && mPreviousCheckTimer >= MIN_TIMER_CHECK_CAMERA)
 			{
@@ -353,37 +353,33 @@ namespace VoxToVFXFramework.Scripts.Managers
 			mIsRenderFinished = false;
 			mPlanes = GeometryUtility.CalculateFrustumPlanes(mCamera);
 
-			NativeList<int> chunkIndex = new NativeList<int>(Allocator.TempJob);
-			NativeList<ChunkVFX> activeChunks = new NativeList<ChunkVFX>(Allocator.TempJob);
-			for (int index = 0; index < Chunks.Length; index++)
-			{
-				ChunkVFX chunkVFX = Chunks[index];
-
-				chunkVFX.IsActive = GeometryUtility.TestPlanesAABB(mPlanes, new Bounds(Chunks[index].CenterWorldPosition, Vector3.one * WorldData.CHUNK_SIZE)) ? 1 : 0;
-				Chunks[index] = chunkVFX;
-				if (chunkVFX.IsActive == 1)
-				{
-					activeChunks.Add(chunkVFX);
-					chunkIndex.Add(index);
-				}
-			}
-			int totalActive = Chunks.Count(chunk => chunk.IsActive == 1);
-			int totalLength = Chunks.Where(chunk => chunk.IsActive == 1).Sum(chunk => chunk.Length);
+			NativeList<int> chunkIndex = new NativeList<int>(Chunks.Length, Allocator.TempJob);
 			int renderDistance = QualityManager.Instance.RenderDistance;
-			NativeList<VoxelVFX> buffer = new NativeList<VoxelVFX>(totalLength, Allocator.TempJob);
-			JobHandle computeRenderingChunkJob = new ComputeRenderingChunkJob()
+			NativeArray<Plane> planes = new NativeArray<Plane>(mPlanes, Allocator.TempJob);
+			JobHandle computeVisibleChunkJob = new ComputeVisibleChunkJob()
 			{
+				Chunks = Chunks,
+				PlayerPosition = PlayerPosition.position,
+				ChunkIndex = chunkIndex.AsParallelWriter(),
+				RenderDistance = renderDistance,
 				LodDistanceLod0 = LodDistanceLod0.Value,
 				LodDistanceLod1 = LodDistanceLod1.Value,
-				PlayerPosition = PlayerPosition.position,
+				Planes = planes
+			}.Schedule(Chunks.Length, 32);
+			computeVisibleChunkJob.Complete();
+			planes.Dispose();
+			
+			int totalActive = Chunks.Count(chunk => chunk.IsActive == 1);
+			int totalLength = Chunks.Where(chunk => chunk.IsActive == 1).Sum(chunk => chunk.Length);
+			NativeList<VoxelVFX> buffer = new NativeList<VoxelVFX>(totalLength, Allocator.TempJob);
+
+			JobHandle computeRenderingChunkJob = new ComputeRenderingChunkJob()
+			{
 				Data = mChunksLoaded,
-				Chunks = activeChunks,
 				Buffer = buffer.AsParallelWriter(),
 				ChunkIndex = chunkIndex,
-				RenderDistance = renderDistance
 			}.Schedule(totalActive, 64);
 			computeRenderingChunkJob.Complete();
-			activeChunks.Dispose();
 			chunkIndex.Dispose();
 
 			if (buffer.Length > 0)
