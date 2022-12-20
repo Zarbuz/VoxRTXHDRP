@@ -27,8 +27,10 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 {
 	#region Fields
 
-	public event Action<int, float> LoadProgressCallback;
+	public event Action<float> LoadProgressCallback;
 	public event Action<string, List<string>> LoadFinishedCallback;
+
+	public int MainStep { get; set; }
 
 	private string mOutputPath;
 	private string mInputFileName;
@@ -54,7 +56,7 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 
 	#region ConstStatic
 
-	public const int MAX_STEPS_ON_IMPORT = 2;
+	public const int MAX_STEPS_ON_IMPORT = 3;
 
 	#endregion
 
@@ -103,7 +105,8 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 		mOutputPath = outputPath;
 		mChunksWritten.Clear();
 		mImporter = new VoxImporter();
-		StartCoroutine(mImporter.LoadVoxModelAsync(inputPath, OnLoadFrameProgress, OnVoxLoadFinished));
+		MainStep = 1;
+		mImporter.LoadVoxModelAsync(inputPath, OnLoadFrameProgress, OnVoxLoadFinished);
 	}
 
 	public void ReadZipFile(string inputPath)
@@ -202,7 +205,7 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 	private IEnumerator RefreshLoadProgressCo()
 	{
 		CanvasPlayerPCManager.Instance.PauseLockedState = true;
-		LoadProgressCallback?.Invoke(1, mReadCompleted / (float)RuntimeVoxManager.Instance.Chunks.Length);
+		LoadProgressCallback?.Invoke(mReadCompleted / (float)RuntimeVoxManager.Instance.Chunks.Length);
 		yield return new WaitForEndOfFrame();
 	}
 
@@ -287,7 +290,7 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 
 	private void OnLoadFrameProgress(float progress)
 	{
-		LoadProgressCallback?.Invoke(1, progress);
+		LoadProgressCallback?.Invoke(progress);
 	}
 
 	private void OnVoxLoadFinished(WorldData worldData)
@@ -315,6 +318,7 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 
 	private IEnumerator ComputeLodCo(WorldData worldData)
 	{
+		MainStep = 3;
 		Task task = Task.Run(() => worldData.ComputeLodsChunks(OnComputeLodResult, OnComputeLodProgress, OnComputeLodFinished));
 
 		while (!task.IsCompleted)
@@ -398,7 +402,7 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 	{
 		UnityMainThreadManager.Instance.Enqueue(() =>
 		{
-			LoadProgressCallback?.Invoke(2, progress);
+			LoadProgressCallback?.Invoke(progress);
 		});
 	}
 

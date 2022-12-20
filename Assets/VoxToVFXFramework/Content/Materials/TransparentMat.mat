@@ -15,7 +15,6 @@ Material:
   - _DISABLE_DECALS
   - _ENABLE_FOG_ON_TRANSPARENT
   - _ENABLE_GEOMETRIC_SPECULAR_AA
-  - _MASKMAP
   - _NORMALMAP_TANGENT_SPACE
   - _REFRACTION_SPHERE
   - _SURFACE_TYPE_TRANSPARENT
@@ -219,7 +218,7 @@ Material:
     - _StencilWriteMask: 6
     - _StencilWriteMaskDepth: 9
     - _StencilWriteMaskGBuffer: 15
-    - _StencilWriteMaskMV: 41
+    - _StencilWriteMaskMV: 43
     - _SubsurfaceMask: 1
     - _SupportDecals: 0
     - _SurfaceType: 1

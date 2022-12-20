@@ -130,10 +130,10 @@ namespace VoxToVFXFramework.Scripts.UI.ImportScene
 			}
 		}
 
-		private void OnLoadProgressUpdate(int step, float progress)
+		private void OnLoadProgressUpdate(float progress)
 		{
 			ImportState = EImportState.IMPORT_IN_PROGRESS;
-			ProgressStepText.text = $"Step: {step}/{VoxelDataCreatorManager.MAX_STEPS_ON_IMPORT}";
+			ProgressStepText.text = $"Step: {VoxelDataCreatorManager.Instance.MainStep}/{VoxelDataCreatorManager.MAX_STEPS_ON_IMPORT}";
 			ProgressText.text = $"{progress.ToString("P", CultureInfo.InvariantCulture)}";
 			ProgressBarFilled.fillAmount = progress;
 		}

@@ -31,77 +31,90 @@ namespace VoxToVFXFramework.Scripts.Importer
 
 		#region PublicMethods
 
-		public IEnumerator LoadVoxModelAsync(string path, Action<float> onProgressCallback, Action<WorldData> onFinishedCallback)
+		public void LoadVoxModelAsync(string path, Action<float> onProgressCallback, Action<WorldData> onFinishedCallback)
 		{
 			CustomVoxReader voxReader = new CustomVoxReader();
-			mVoxModel = voxReader.LoadModel(path) as VoxModelCustom;
-			if (mVoxModel == null)
+			voxReader.LoadModelAsync(path, (progress) => OnReadVoxProgress(progress, onProgressCallback), (model) => OnVoxModelReaded(model, onProgressCallback, onFinishedCallback));
+		}
+
+		private void OnVoxModelReaded(VoxModelCustom obj, Action<float> onProgressCallback, Action<WorldData> onFinishedCallback)
+		{
+			if (obj == null)
 			{
 				onFinishedCallback?.Invoke(null);
+				return;
 			}
-			else
+			mVoxModel = obj;
+			VoxelDataCreatorManager.Instance.StartCoroutine(DecodeImportedData(onProgressCallback, onFinishedCallback));
+		}
+
+
+		private IEnumerator DecodeImportedData(Action<float> onProgressCallback, Action<WorldData> onFinishedCallback)
+		{
+			InitShapeModelCounts();
+			WorldData = new WorldData(mVoxModel);
+			VoxelDataCreatorManager.Instance.MainStep = 2;
+
+			for (int i = 0; i < mVoxModel.TransformNodeChunks.Count; i++)
 			{
-				InitShapeModelCounts();
-				WorldData = new WorldData(mVoxModel);
+				TransformNodeChunk transformNodeChunk = mVoxModel.TransformNodeChunks[i];
+				int childId = transformNodeChunk.ChildId;
 
-				for (int i = 0; i < mVoxModel.TransformNodeChunks.Count; i++)
+				if (mModelMatrix.ContainsKey(transformNodeChunk.Id))
 				{
-					TransformNodeChunk transformNodeChunk = mVoxModel.TransformNodeChunks[i];
-					int childId = transformNodeChunk.ChildId;
+					mModelMatrix[transformNodeChunk.Id] *= ReadMatrix4X4FromRotation(transformNodeChunk.RotationAt(), transformNodeChunk.TranslationAt());
+				}
+				else
+				{
+					mModelMatrix[transformNodeChunk.Id] = ReadMatrix4X4FromRotation(transformNodeChunk.RotationAt(), transformNodeChunk.TranslationAt());
+				}
 
-					if (mModelMatrix.ContainsKey(transformNodeChunk.Id))
+				GroupNodeChunk groupNodeChunk = mVoxModel.GroupNodeChunks.FirstOrDefault(grp => grp.Id == childId);
+				if (groupNodeChunk != null)
+				{
+					foreach (int child in groupNodeChunk.ChildIds)
 					{
-						mModelMatrix[transformNodeChunk.Id] *= ReadMatrix4X4FromRotation(transformNodeChunk.RotationAt(), transformNodeChunk.TranslationAt());
+						mModelMatrix[child] = ReadMatrix4X4FromRotation(transformNodeChunk.RotationAt(), transformNodeChunk.TranslationAt());
+					}
+				}
+				else
+				{
+					ShapeNodeChunk shapeNodeChunk = mVoxModel.ShapeNodeChunks.FirstOrDefault(shp => shp.Id == childId);
+					if (shapeNodeChunk == null)
+					{
+						Debug.LogError("Failed to find chunk with ID: " + childId);
 					}
 					else
 					{
-						mModelMatrix[transformNodeChunk.Id] = ReadMatrix4X4FromRotation(transformNodeChunk.RotationAt(), transformNodeChunk.TranslationAt());
-					}
-
-					GroupNodeChunk groupNodeChunk = mVoxModel.GroupNodeChunks.FirstOrDefault(grp => grp.Id == childId);
-					if (groupNodeChunk != null)
-					{
-						foreach (int child in groupNodeChunk.ChildIds)
+						foreach (ShapeModel shapeModel in shapeNodeChunk.Models)
 						{
-							mModelMatrix[child] = ReadMatrix4X4FromRotation(transformNodeChunk.RotationAt(), transformNodeChunk.TranslationAt());
-						}
-					}
-					else
-					{
-						ShapeNodeChunk shapeNodeChunk = mVoxModel.ShapeNodeChunks.FirstOrDefault(shp => shp.Id == childId);
-						if (shapeNodeChunk == null)
-						{
-							Debug.LogError("Failed to find chunk with ID: " + childId);
-						}
-						else
-						{
-							foreach (ShapeModel shapeModel in shapeNodeChunk.Models)
+							int modelId = shapeModel.ModelId;
+							VoxelDataCustom voxelData = mVoxModel.VoxelFramesCustom[modelId];
+							mShapeModelCounts[shapeModel.ModelId].Count++;
+							WriteVoxelFrameData(transformNodeChunk.Id, voxelData);
+							if (mShapeModelCounts[shapeModel.ModelId].Count == mShapeModelCounts[shapeModel.ModelId].Total)
 							{
-								int modelId = shapeModel.ModelId;
-								VoxelDataCustom voxelData = mVoxModel.VoxelFramesCustom[modelId];
-								mShapeModelCounts[shapeModel.ModelId].Count++;
-								WriteVoxelFrameData(transformNodeChunk.Id, voxelData);
-								if (mShapeModelCounts[shapeModel.ModelId].Count == mShapeModelCounts[shapeModel.ModelId].Total)
-								{
-									voxelData.VoxelNativeArray.Dispose();
-								}
+								voxelData.VoxelNativeArray.Dispose();
 							}
 						}
 					}
-
-					onProgressCallback?.Invoke(i / (float)mVoxModel.TransformNodeChunks.Count);
-					yield return new WaitForEndOfFrame();
 				}
 
-				foreach (VoxelDataCustom voxelDataCustom in mVoxModel.VoxelFramesCustom.Where(voxelDataCustom => voxelDataCustom.VoxelNativeArray.IsCreated))
-				{
-					voxelDataCustom.VoxelNativeArray.Dispose();
-				}
-
-				onFinishedCallback?.Invoke(WorldData);
+				yield return new WaitForEndOfFrame();
+				onProgressCallback?.Invoke(i / (float)mVoxModel.TransformNodeChunks.Count);
 			}
 
-			yield return null;
+			foreach (VoxelDataCustom voxelDataCustom in mVoxModel.VoxelFramesCustom.Where(voxelDataCustom => voxelDataCustom.VoxelNativeArray.IsCreated))
+			{
+				voxelDataCustom.VoxelNativeArray.Dispose();
+			}
+
+			onFinishedCallback?.Invoke(WorldData);
+		}
+		
+		private void OnReadVoxProgress(float progress, Action<float> onProgressCallback)
+		{
+			onProgressCallback?.Invoke(progress);
 		}
 
 		public static int GetGridPos(int x, int y, int z, int3 volumeSize)

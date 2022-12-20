@@ -66,7 +66,7 @@ namespace VoxToVFXFramework.Scripts.UI.Loading
 
 		#region PrivateMethods
 
-		private void OnLoadProgressUpdate(int step, float progress)
+		private void OnLoadProgressUpdate(float progress)
 		{
 			ProgressBar.SetProgress(progress);
 		}
