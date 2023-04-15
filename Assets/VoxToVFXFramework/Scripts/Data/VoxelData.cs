@@ -1,6 +1,7 @@
 ﻿using System;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.VFX;
 
 namespace VoxToVFXFramework.Scripts.Data
@@ -24,6 +25,7 @@ namespace VoxToVFXFramework.Scripts.Data
 		public Color emission;
 		public float emissionPower;
 		public float alpha;
+		public float ior;
 	}
 
 	[VFXType(VFXTypeAttribute.Usage.GraphicsBuffer)]
@@ -48,6 +50,12 @@ namespace VoxToVFXFramework.Scripts.Data
 		public int Length;
 	}
 
+	public struct VoxelAdditionalData
+	{
+		public VoxelFace VoxelFace;
+		public short ChunkIndex;
+	}
+
 	[Flags]
 	public enum VoxelFace : short
 	{
@@ -59,7 +67,6 @@ namespace VoxToVFXFramework.Scripts.Data
 		Front = 16,
 		Back = 32
 	}
-
 
 	public struct VoxelData
 	{

@@ -3,12 +3,12 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -19,6 +19,7 @@ using VoxToVFXFramework.Scripts.Importer;
 using VoxToVFXFramework.Scripts.Managers;
 using VoxToVFXFramework.Scripts.Singleton;
 using VoxToVFXFramework.Scripts.UI;
+using VoxToVFXFramework.Scripts.Utils;
 using CompressionLevel = System.IO.Compression.CompressionLevel;
 using Debug = UnityEngine.Debug;
 
@@ -26,8 +27,10 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 {
 	#region Fields
 
-	public event Action<int, float> LoadProgressCallback;
-	public event Action LoadFinishedCallback;
+	public event Action<float> LoadProgressCallback;
+	public event Action<string, List<string>> LoadFinishedCallback;
+
+	public int MainStep { get; set; }
 
 	private string mOutputPath;
 	private string mInputFileName;
@@ -37,7 +40,10 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 	private string mCurrentInputFolder;
 	private readonly ConcurrentBag<ChunkDataFile> mChunksWritten = new ConcurrentBag<ChunkDataFile>();
 	private readonly List<Task> mTaskList = new List<Task>();
-	private const string EXTRACT_TMP_FOLDER_NAME = "extract_tmp";
+	private const string EXTRACT_TMP_FOLDER_NAME = "ExtractTmp";
+	private const string IMPORT_TMP_FOLDER_NAME = "ImportTmp";
+	public const string VOX_FOLDER_CACHE_NAME = "VoxCache";
+
 	private int mReadCompleted;
 
 	private int mMinX = int.MaxValue;
@@ -48,41 +54,72 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 	private int mMaxZ = int.MinValue;
 	#endregion
 
+	#region ConstStatic
+
+	public const int MAX_STEPS_ON_IMPORT = 3;
+
+	#endregion
+
 	#region UnityMethods
 
 	protected override void OnStart()
 	{
 		mAppPersistantPath = Application.persistentDataPath;
+
+		string voxCache = Path.Combine(Application.persistentDataPath, VOX_FOLDER_CACHE_NAME);
+		if (!Directory.Exists(voxCache))
+		{
+			Directory.CreateDirectory(voxCache);
+		}
 	}
 
 	private void OnApplicationQuit()
 	{
 		mImporter?.Dispose();
+		CleanFolders();
 	}
 
 	#endregion
 
 	#region PublicMethods
 
+	public void CreateZipFile(string inputPath)
+	{
+		string fileName = Path.GetFileNameWithoutExtension(inputPath);
+		string outputDirectory = Path.Combine(mAppPersistantPath, IMPORT_TMP_FOLDER_NAME);
+
+		if (!Directory.Exists(outputDirectory))
+		{
+			Directory.CreateDirectory(outputDirectory);
+		}
+	
+		string outputPath = Path.Combine(outputDirectory, fileName + ".zip");
+		CreateZipFile(inputPath, outputPath);
+	}
+
 	public void CreateZipFile(string inputPath, string outputPath)
 	{
 		mInputFileName = Path.GetFileNameWithoutExtension(inputPath);
+		mInputFileName = Regex.Replace(mInputFileName, @"\s", "");
+
 		mOutputPath = outputPath;
 		mChunksWritten.Clear();
 		mImporter = new VoxImporter();
-		StartCoroutine(mImporter.LoadVoxModelAsync(inputPath, OnLoadFrameProgress, OnVoxLoadFinished));
+		MainStep = 1;
+		mImporter.LoadVoxModelAsync(inputPath, OnLoadFrameProgress, OnVoxLoadFinished);
 	}
 
 	public void ReadZipFile(string inputPath)
 	{
-		RuntimeVoxManager.Instance.Release();
 		string checksum = GetMd5Checksum(inputPath);
-		string inputFolder = Path.Combine(Application.persistentDataPath, checksum);
+		string voxCache = Path.Combine(Application.persistentDataPath, VOX_FOLDER_CACHE_NAME);
+
+		string inputFolder = Path.Combine(voxCache, checksum);
 		mCurrentInputFolder = inputFolder;
 		if (!Directory.Exists(inputFolder))
 		{
 			Directory.CreateDirectory(inputFolder);
-			ZipFile.ExtractToDirectory(inputPath, Path.Combine(Application.persistentDataPath, inputFolder));
+			ZipFile.ExtractToDirectory(inputPath, inputFolder);
 		}
 
 		StartCoroutine(StartReadImportFilesCo(inputFolder));
@@ -102,15 +139,38 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 		}
 	}
 
+	public void DestroyFiles(List<string> outputChunkPaths)
+	{
+		foreach (string path in outputChunkPaths.Where(File.Exists))
+		{
+			File.Delete(path);
+		}
+	}
+
 	#endregion
 
 	#region PrivateMethods
 
+	private void CleanFolders()
+	{
+		string extractFolder = Path.Combine(Application.persistentDataPath, EXTRACT_TMP_FOLDER_NAME);
+		if (Directory.Exists(extractFolder))
+		{
+			CleanFolder(extractFolder);
+		}
+
+		string inputFolder = Path.Combine(Application.persistentDataPath, IMPORT_TMP_FOLDER_NAME);
+		if (Directory.Exists(inputFolder))
+		{
+			CleanFolder(inputFolder);
+		}
+	}
+
 	private string GetMd5Checksum(string filepath)
 	{
 		using MD5 md5 = MD5.Create();
-		using FileStream stream = File.OpenRead(filepath);
-		byte[] hash = md5.ComputeHash(stream);
+		var data = File.ReadAllBytes(filepath);
+		byte[] hash = md5.ComputeHash(data);
 		return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
 	}
 
@@ -144,7 +204,8 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 
 	private IEnumerator RefreshLoadProgressCo()
 	{
-		LoadProgressCallback?.Invoke(1, mReadCompleted / (float)RuntimeVoxManager.Instance.Chunks.Length);
+		CanvasPlayerPCManager.Instance.PauseLockedState = true;
+		LoadProgressCallback?.Invoke(mReadCompleted / (float)RuntimeVoxManager.Instance.Chunks.Length);
 		yield return new WaitForEndOfFrame();
 	}
 
@@ -202,17 +263,11 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 			mat.metallic = reader.ReadSingle();
 			mat.smoothness = reader.ReadSingle();
 			mat.alpha = reader.ReadSingle();
+			mat.ior = reader.ReadSingle();
 			materials[i] = mat;
 		}
 		RuntimeVoxManager.Instance.SetMaterials(materials);
 
-		//Edge settings
-		int edgeR = reader.ReadInt32();
-		int edgeG = reader.ReadInt32();
-		int edgeB = reader.ReadInt32();
-		float width = reader.ReadSingle();
-
-		PostProcessingManager.Instance.SetEdgePostProcess(width, new Color(edgeR / (float)255, edgeG / (float)255, edgeB / (float)255));
 		return files;
 	}
 
@@ -235,18 +290,18 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 
 	private void OnLoadFrameProgress(float progress)
 	{
-		LoadProgressCallback?.Invoke(1, progress);
+		LoadProgressCallback?.Invoke(progress);
 	}
 
 	private void OnVoxLoadFinished(WorldData worldData)
 	{
 		if (worldData == null)
 		{
-			Debug.LogError("[RuntimeVoxManager] Failed to load vox model");
+			Debug.LogError("[VoxelDataCreatorManager] Failed to load vox model");
 			return;
 		}
 
-		Debug.Log("[RuntimeVoxController] OnVoxLoadFinished");
+		Debug.Log("[VoxelDataCreatorManager] OnVoxLoadFinished");
 		string tmpPath = Path.Combine(Application.persistentDataPath, EXTRACT_TMP_FOLDER_NAME);
 		if (!Directory.Exists(tmpPath))
 		{
@@ -263,7 +318,8 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 
 	private IEnumerator ComputeLodCo(WorldData worldData)
 	{
-		Task task = Task.Run(() => worldData.ComputeLodsChunks(OnChunkLoadResult, OnProgressChunkLoadResult, OnChunkLoadedFinished));
+		MainStep = 3;
+		Task task = Task.Run(() => worldData.ComputeLodsChunks(OnComputeLodResult, OnComputeLodProgress, OnComputeLodFinished));
 
 		while (!task.IsCompleted)
 		{
@@ -275,6 +331,12 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 	{
 		string tmpPath = Path.Combine(folderPath);
 		DirectoryInfo di = new DirectoryInfo(tmpPath);
+
+		foreach (DirectoryInfo dir in di.GetDirectories())
+		{
+			dir.Delete(true);	
+		}
+
 		foreach (FileInfo file in di.GetFiles())
 		{
 			file.Delete();
@@ -290,7 +352,7 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 		}
 	}
 
-	private void OnChunkLoadResult(VoxelResult voxelResult)
+	private void OnComputeLodResult(VoxelResult voxelResult)
 	{
 		if (voxelResult.Data.Length == 0)
 		{
@@ -322,6 +384,7 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 				mMinZ = Mathf.Min(mMinZ, worldPositionZ);
 				mMaxZ = Mathf.Max(mMaxZ, worldPositionZ);
 			}
+
 		}
 
 		ChunkDataFile chunk = new ChunkDataFile
@@ -336,11 +399,11 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 		mChunksWritten.Add(chunk);
 	}
 
-	private void OnProgressChunkLoadResult(float progress)
+	private void OnComputeLodProgress(float progress)
 	{
 		UnityMainThreadManager.Instance.Enqueue(() =>
 		{
-			LoadProgressCallback?.Invoke(2, progress);
+			LoadProgressCallback?.Invoke(progress);
 		});
 	}
 
@@ -383,47 +446,51 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 			binaryWriter.Write(mat.metallic);
 			binaryWriter.Write(mat.smoothness);
 			binaryWriter.Write(mat.alpha);
+			binaryWriter.Write(mat.ior);
 		}
-
-		//Edge settings
-		string color = mImporter.WorldData.EdgeSetting.Attributes["_color"];
-		string width = mImporter.WorldData.EdgeSetting.Attributes["_width"];
-		string[] edgeColor = color.Split(" ");
-		binaryWriter.Write(Convert.ToInt32(edgeColor[0]));
-		binaryWriter.Write(Convert.ToInt32(edgeColor[1]));
-		binaryWriter.Write(Convert.ToInt32(edgeColor[2]));
-		binaryWriter.Write(Convert.ToSingle(width, CultureInfo.InvariantCulture));
 	}
 
-	private void OnChunkLoadedFinished()
+	private void OnComputeLodFinished()
 	{
+		Debug.Log("[VoxelDataCreatorManager] OnComputeLodFinished");
 		WriteStructureFile();
 		mImporter.Dispose();
 		mImporter = null;
+		SplitZipFilesInChunks();
+
+		
+	}
+
+	private void SplitZipFilesInChunks()
+	{
 		string inputFolder = Path.Combine(mAppPersistantPath, EXTRACT_TMP_FOLDER_NAME);
 		if (File.Exists(mOutputPath))
 		{
 			File.Delete(mOutputPath);
 		}
-		ZipFile.CreateFromDirectory(inputFolder, mOutputPath, CompressionLevel.Optimal, false, Encoding.UTF8);
-		string md5ResultFile = GetMd5Checksum(mOutputPath);
 
-		string outputFolder = Path.Combine(mAppPersistantPath, md5ResultFile);
-		if (Directory.Exists(outputFolder))
+		ZipFile.CreateFromDirectory(inputFolder, mOutputPath, CompressionLevel.Optimal, false, Encoding.UTF8);
+		string directory = Path.Combine(mAppPersistantPath, IMPORT_TMP_FOLDER_NAME, mInputFileName);
+		if (!Directory.Exists(directory))
 		{
-			Directory.Delete(outputFolder);
+			Directory.CreateDirectory(directory);
 		}
-		Directory.CreateDirectory(outputFolder);
-		MoveFilesFromFolder(inputFolder, outputFolder);
-		Process.Start(Path.GetDirectoryName(mOutputPath) ?? string.Empty);
+		else
+		{
+			CleanFolder(directory);
+		}
+
+		List<string> list = FileUtils.SplitFile(mOutputPath, 5000000, mInputFileName, directory);
 
 		UnityMainThreadManager.Instance.Enqueue(() =>
 		{
-			LoadFinishedCallback?.Invoke();
+			CanvasPlayerPCManager.Instance.PauseLockedState = false;
+			LoadFinishedCallback?.Invoke(mOutputPath, list);
 		});
 	}
 
 	#endregion
 
 
+	
 }

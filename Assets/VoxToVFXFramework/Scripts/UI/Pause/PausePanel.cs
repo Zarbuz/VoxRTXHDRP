@@ -51,6 +51,7 @@ public class PausePanel : MonoBehaviour
 	private void Refresh()
 	{
 		ImportSceneButton.gameObject.SetActive(!RuntimeVoxManager.Instance.IsReady);
+		OpenSceneButton.gameObject.SetActive(!RuntimeVoxManager.Instance.IsReady);
 		QuitSceneButton.gameObject.SetActive(RuntimeVoxManager.Instance.IsReady);
 		PhotoModeButton.gameObject.SetActive(RuntimeVoxManager.Instance.IsReady);
 		ChangeWeatherButton.gameObject.SetActive(RuntimeVoxManager.Instance.IsReady);

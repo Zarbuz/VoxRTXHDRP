@@ -13,9 +13,9 @@ namespace VoxToVFXFramework.Scripts.Jobs
 	public struct ComputeVoxelRotationJob : IJobParallelFor
 	{
 		[ReadOnly] public NativeArray<int> Keys;
-		[ReadOnly] public UnsafeHashMap<int, VoxelData> Data;
+		[ReadOnly] public UnsafeParallelHashMap<int, VoxelData> Data;
 		[ReadOnly] public NativeArray<VoxelMaterialVFX> Materials;
-		[ReadOnly] public UnsafeHashMap<int, UnsafeHashMap<int, VoxelData>> WorldDataPositions;
+		[ReadOnly] public UnsafeParallelHashMap<int, UnsafeParallelHashMap<int, VoxelData>> WorldDataPositions;
 		[ReadOnly] public int Step;
 
 		[ReadOnly] public int3 VolumeSize;
@@ -176,37 +176,41 @@ namespace VoxToVFXFramework.Scripts.Jobs
 
 
 			bool isCurrentTransparent = IsTransparent(v.ColorIndex);
+			bool canRender = !isCurrentTransparent || (v.PosX != 0 &&
+																			   v.PosZ != 0 &&
+																			   v.PosX != WorldData.CHUNK_SIZE - 1 &&
+																			   v.PosZ != WorldData.CHUNK_SIZE - 1);
 
-			if (!left || isCurrentTransparent && !IsTransparent(vLeft.ColorIndex) || !isCurrentTransparent && IsTransparent(vLeft.ColorIndex))
+			if (canRender && (!left || isCurrentTransparent && !IsTransparent(vLeft.ColorIndex) || !isCurrentTransparent && IsTransparent(vLeft.ColorIndex)))
 			{
 				voxelFace = VoxelFace.Left;
 			}
 
-			if (!right || isCurrentTransparent && !IsTransparent(vRight.ColorIndex) || !isCurrentTransparent && IsTransparent(vRight.ColorIndex))
+			if (canRender && (!right || isCurrentTransparent && !IsTransparent(vRight.ColorIndex) || !isCurrentTransparent && IsTransparent(vRight.ColorIndex)))
 			{
 				voxelFace |= VoxelFace.Right;
 			}
 
+			//exception for top 
 			if (!top || isCurrentTransparent && !IsTransparent(vTop.ColorIndex) || !isCurrentTransparent && IsTransparent(vTop.ColorIndex))
 			{
 				voxelFace |= VoxelFace.Top;
 			}
 
-			if (!bottom || isCurrentTransparent && !IsTransparent(vBottom.ColorIndex) || !isCurrentTransparent && IsTransparent(vBottom.ColorIndex))
+			if (canRender  && (!bottom || isCurrentTransparent && !IsTransparent(vBottom.ColorIndex) || !isCurrentTransparent && IsTransparent(vBottom.ColorIndex)))
 			{
 				voxelFace |= VoxelFace.Bottom;
 			}
 
-			if (!front || isCurrentTransparent && !IsTransparent(vFront.ColorIndex) || !isCurrentTransparent && IsTransparent(vFront.ColorIndex))
+			if (canRender && (!front || isCurrentTransparent && !IsTransparent(vFront.ColorIndex) || !isCurrentTransparent && IsTransparent(vFront.ColorIndex)))
 			{
 				voxelFace |= VoxelFace.Front;
 			}
 
-			if (!back || isCurrentTransparent && !IsTransparent(vBack.ColorIndex) || !isCurrentTransparent && IsTransparent(vBack.ColorIndex))
+			if (canRender && (!back || isCurrentTransparent && !IsTransparent(vBack.ColorIndex) || !isCurrentTransparent && IsTransparent(vBack.ColorIndex)))
 			{
 				voxelFace |= VoxelFace.Back;
 			}
-
 
 			v.Face = voxelFace;
 			Result.AddNoResize(v);

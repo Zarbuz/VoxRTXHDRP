@@ -29,6 +29,38 @@
       "Value": ""
     },
     {
+      "Key": "[LOGIN]",
+      "Value": ""
+    },
+    {
+      "Key": "[LOGOUT]",
+      "Value": ""
+    },
+    {
+      "Key": "[NAME]",
+      "Value": ""
+    },
+    {
+      "Key": "[USERNAME]",
+      "Value": ""
+    },
+    {
+      "Key": "[OPTIONAL]",
+      "Value": ""
+    },
+    {
+      "Key": "[BACK]",
+      "Value": ""
+    },
+    {
+      "Key": "[CONTINUE]",
+      "Value": ""
+    },
+    {
+      "Key": "[IMAGE]",
+      "Value": ""
+    },
+    {
       "Key": "[PAUSE_CONTINUE_BUTTON]",
       "Value": ""
     },
@@ -326,6 +358,766 @@
     },
     {
       "Key": "[PHOTO_EXPOSURE]",
+      "Value": ""
+    },
+    {
+      "Key": "[TOOLBAR_CONNECT_WALLET]",
+      "Value": ""
+    },
+    {
+      "Key": "[LOGIN_SCAN_QR_CODE]",
+      "Value": ""
+    },
+    {
+      "Key": "[TOOLBAR_CREATE]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_ENTER_DETAILS]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_ADD_BIO]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_ENTER_BIO]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_UPLOAD_PICTURE]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_RECOMMENDED_SIZE]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_SELECT_PICTURE]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_DELETE_PICTURE]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_MISSING_USERNAME]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_USERNAME_NO_SPACE]",
+      "Value": ""
+    },
+    {
+      "Key": "[WALLET_SIGNING]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_UPDATE_SUCCESS]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_UPDATE_FAILED]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_USERNAME_NOT_AVAILABLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_ADD_LINKS]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_DISCORD_PLACEHOLDER]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_YOUTUBE_PLACEHOLDER]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_FACEBOOK_PLACEHOLDER]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_WEBSITE_PLACEHOLDER]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_TWITCH_PLACEHOLDER]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_TIKTOK_PLACEHOLDER]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_SNAPCHAT_PLACEHOLDER]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_CREATE_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_CREATE_SUBTITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_CREATE_HELP_BUTTON]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_CREATE_NEW_BUTTON]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_HELP_INFO_TEXT]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_CREATE_TITLE2]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_CREATE_SUBTITLE_DEPLOY]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_SETUP_SMART_CONTRACT_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_SETUP_SMART_CONTRACT_SUBTITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_HELP_SMART_CONTRACT]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_NAME_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_SYMBOL_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_ARTWORKS]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_HELP_SMART_CONTRACT_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_WAITING_CONFIRMATION_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_CONFIRM_VIA_WALLET]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_SMART_CONTRACT_DEPLOYMENT_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_SMART_CONTRACT_CREATION_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_CONFIRM_TRANSACTION_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_CONGRATULATIONS_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_EXECUTE_CONTRACT_ERROR]",
+      "Value": ""
+    },
+    {
+      "Key": "[COLLECTION_CREATE_RETRY]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_FILE_TOO_BIG]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_UPLOAD_COVER_IMAGE]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_PROFILE_RECOMMENDED_SIZE_BANNER]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATE_UPLOAD_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_CONVERSION_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_CONVERSION_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_UPLOAD_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_UPLOAD_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_UPLOAD_ERROR]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_MINT_NFT_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_MINT_NFT_ADD_DETAILS]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_MINT_NFT_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_MINT_DESCRIPTION_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_MINT_COLLECTION_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_MINT_NAME_TOO_SHORT]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_MINT_MISSING_IMAGE]",
+      "Value": ""
+    },
+    {
+      "Key": "[MINT_IN_PROGRESS_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_CREATE_SPLIT]",
+      "Value": ""
+    },
+    {
+      "Key": "[CREATION_CREATE_SPLIT_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[MINT_IN_PROGRESS_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[MINT_SUCCESS_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[MINT_SUCCESS_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[MINT_SUCCESS_VIEW_COLLECTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[MINT_SUCCESS_SET_BUY_PRICE]",
+      "Value": ""
+    },
+    {
+      "Key": "[PREVIEW]",
+      "Value": ""
+    },
+    {
+      "Key": "[LOADING_SCENE_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[LOADING_SCENE_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[PREVIEW_BACK_CREATION]",
+      "Value": ""
+    },
+    {
+      "Key": "[PREVIEW_MISSING_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[PREVIEW_MISSING_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_LIVE_AUCTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_BUY_NOW]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_RESERVE_PRICE]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_ACTIVE_OFFERS]",
+      "Value": ""
+    },
+    {
+      "Key": "[MINTED_ON_DATE]",
+      "Value": ""
+    },
+    {
+      "Key": "[LOAD_VOX_MODEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[LOADING_DOWNLOAD_MODEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_CREATED_BY]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_COLLECTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_DETAILS]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_VIEW_ETHERSCAN]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_VIEW_METADATA]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_VIEW_IPFS]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_EDIT]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_OF]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_OWNED_BY]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_FLOOR_PRICE]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_TOTAL_SALES]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_CUSTOMIZE_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_CUSTOMIZE_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_COLLECTION_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_COLLECTION_LOGO]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_COLLECTION_COVER_IMAGE]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_COLLECTION_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[EDIT_COLLECTION_SAVE_CHANGES]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_NO_ITEM_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_NO_ITEM_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[SET_BUY_PRICE_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[SET_BUY_PRICE_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[SET_BUY_PRICE_RECEIVE]",
+      "Value": ""
+    },
+    {
+      "Key": "[SET_BUY_MARKETPLACE_FEE]",
+      "Value": ""
+    },
+    {
+      "Key": "[SET_BUY_AMOUNT_REQUIRED]",
+      "Value": ""
+    },
+    {
+      "Key": "[MUST_BE_AT_LEAST_X_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[SET_BUY_PRICE]",
+      "Value": ""
+    },
+    {
+      "Key": "[SET_BUY_PRICE_WAITING_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[SET_BUY_PRICE_WAITING_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[BUY_NOW]",
+      "Value": ""
+    },
+    {
+      "Key": "[FIXED_PRICE_TO_BUY]",
+      "Value": ""
+    },
+    {
+      "Key": "[AUCTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[24H_WITH_RESERVE_PRICE]",
+      "Value": ""
+    },
+    {
+      "Key": "[LIST]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_NFT]",
+      "Value": ""
+    },
+    {
+      "Key": "[TRANSFER_NFT]",
+      "Value": ""
+    },
+    {
+      "Key": "[TRANSFER_NFT_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[TRANSFER_NFT_ADDRESS_MANDATORY]",
+      "Value": ""
+    },
+    {
+      "Key": "[TRANSFER_NFT_ADDRESS_INVALID]",
+      "Value": ""
+    },
+    {
+      "Key": "[TRANSFER_NFT_WAITING_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[TRANSFER_NFT_WAITING_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[TRANSFER_NFT_SUCCESS_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[TRANSFER_NFT_SUCCESS_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_NFT_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[SET_BUY_PRICE_SUCCESS_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[SET_BUY_PRICE_SUCCESS_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[VIEW_NFT]",
+      "Value": ""
+    },
+    {
+      "Key": "[CHANGE_BUY_PRICE]",
+      "Value": ""
+    },
+    {
+      "Key": "[REMOVE]",
+      "Value": ""
+    },
+    {
+      "Key": "[CHANGE_BUY_NOW_PRICE_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_PRICE_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_PRICE_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_WAITING_PRICE_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_WAITING_PRICE_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_REMOVED_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_REMOVED_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_ORDER_BY_MOST_ACTIVE]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_ORDER_BY_PRICE_HIGHEST_FIRST]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_ORDER_BY_PRICE_LOWEST_FIRST]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_ORDER_BY_NEWEST]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_ORDER_BY_OLDEST]",
+      "Value": ""
+    },
+    {
+      "Key": "[FOLLOW]",
+      "Value": ""
+    },
+    {
+      "Key": "[UNFOLLOW]",
+      "Value": ""
+    },
+    {
+      "Key": "[FOLLOWING]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_COLLECTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_COLLECTION_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_COLLECTION_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_COLLECTION_WAITING_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_COLLECTION_WAITING_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_COLLECTION_SUCCESS_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_COLLECTION_SUCCESS_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[BACK_TO_PROFILE]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_NFT_WAITING_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_NFT_WAITING_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_NFT_SUCCESS_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[BURN_NFT_SUCCESS_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROVENANCE_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[LAST_SOLD_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[MAKE_OFFER_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[OWNED_BY_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[MINTED_BY_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[BOUGHT_BY_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[BUY_NOW_SET_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[BUY_NOW_REMOVED_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[TRANSFERRED_FROM_TO_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[BUY_NOW_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[BUY_NOW_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[AVAILABLE_BALANCE_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[MARKETPLACE_BALANCE_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[WALLET_BALANCE_LABEL]",
+      "Value": ""
+    },
+    {
+      "Key": "[BUY_NOW_NOT_ENOUGH_ETH]",
+      "Value": ""
+    },
+    {
+      "Key": "[BUY_NOW_WAITING_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[BUY_NOW_WAITING_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[BUY_NOW_SUCCESS_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[BUY_NOW_SUCCESS_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_NO_CREATED_ITEMS]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_NO_CREATED_COLLECTIONS]",
+      "Value": ""
+    },
+    {
+      "Key": "[PROFILE_NO_OWNED_ITEMS]",
+      "Value": ""
+    },
+    {
+      "Key": "[CONFIRM]",
+      "Value": ""
+    },
+    {
+      "Key": "[MAKE_OFFER_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[MAKE_OFFER_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[MAKE_OFFER_WAITING_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[MAKE_OFFER_WAITING_DESCRIPTION]",
+      "Value": ""
+    },
+    {
+      "Key": "[MAKE_OFFER_SUCCESS_TITLE]",
+      "Value": ""
+    },
+    {
+      "Key": "[MAKE_OFFER_SUCCESS_DESCRIPTION]",
       "Value": ""
     },
     {

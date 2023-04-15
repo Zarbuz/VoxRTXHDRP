@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
-using FileToVoxCore.Vox;
+﻿using FileToVoxCore.Vox;
 using FileToVoxCore.Vox.Chunks;
+using System;
+using System.Globalization;
+using System.Threading.Tasks;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
-using VoxToVFXFramework.Scripts.Core;
 using VoxToVFXFramework.Scripts.Importer;
 using VoxToVFXFramework.Scripts.Jobs;
-using VoxToVFXFramework.Scripts.Managers;
 using Color = FileToVoxCore.Drawing.Color;
 
 namespace VoxToVFXFramework.Scripts.Data
@@ -21,9 +17,8 @@ namespace VoxToVFXFramework.Scripts.Data
 	public class WorldData : IDisposable
 	{
 		#region Fields
-		public UnsafeHashMap<int, UnsafeHashMap<int, VoxelData>> WorldDataPositions;
+		public UnsafeParallelHashMap<int, UnsafeParallelHashMap<int, VoxelData>> WorldDataPositions;
 		public NativeArray<VoxelMaterialVFX> Materials { get; private set; }
-		public RendererSettingChunk EdgeSetting { get; private set; }
 		#endregion
 
 		#region ConstStatic
@@ -37,9 +32,8 @@ namespace VoxToVFXFramework.Scripts.Data
 
 		public WorldData(VoxModelCustom voxModel)
 		{
-			WorldDataPositions = new UnsafeHashMap<int, UnsafeHashMap<int, VoxelData>>(256, Allocator.Persistent);
+			WorldDataPositions = new UnsafeParallelHashMap<int, UnsafeParallelHashMap<int, VoxelData>>(256, Allocator.Persistent);
 			WriteMaterials(voxModel);
-			WriteRenderSettings(voxModel);
 		}
 
 		public void AddVoxels(NativeList<Vector4> voxels)
@@ -73,8 +67,8 @@ namespace VoxToVFXFramework.Scripts.Data
 					keys.Dispose();
 					onChunkLoadedFinished?.Invoke();
 				}
-			}); 
-		
+			});
+
 		}
 
 		public void Dispose()
@@ -99,9 +93,9 @@ namespace VoxToVFXFramework.Scripts.Data
 			int chunkIndex = keys[index];
 			int3 chunkWorldPosition = GetChunkWorldPosition(chunkIndex);
 			Vector3 chunkCenterWorldPosition = GetCenterChunkWorldPosition(chunkIndex);
-			UnsafeHashMap<int, VoxelData> resultLod0 = WorldDataPositions[chunkIndex];
+			UnsafeParallelHashMap<int, VoxelData> resultLod0 = WorldDataPositions[chunkIndex];
 
-			UnsafeHashMap<int, VoxelData> resultLod1 = ComputeLod(resultLod0, chunkWorldPosition, 1, 2);
+			UnsafeParallelHashMap<int, VoxelData> resultLod1 = ComputeLod(resultLod0, chunkWorldPosition, 1, 2);
 			NativeList<VoxelData> finalResultLod0 = ComputeRotation(resultLod0, WorldDataPositions, Materials, 1, chunkWorldPosition);
 
 			VoxelResult voxelResult = new VoxelResult
@@ -116,7 +110,7 @@ namespace VoxToVFXFramework.Scripts.Data
 			onChunkLoadedCallback?.Invoke(voxelResult);
 			voxelResult.Data.Dispose();
 
-			UnsafeHashMap<int, VoxelData> resultLod2 = ComputeLod(resultLod1, chunkWorldPosition, 2, 4);
+			UnsafeParallelHashMap<int, VoxelData> resultLod2 = ComputeLod(resultLod1, chunkWorldPosition, 2, 4);
 			NativeList<VoxelData> finalResultLod1 = ComputeRotation(resultLod1, WorldDataPositions, Materials, 2, chunkWorldPosition);
 			resultLod1.Dispose();
 			voxelResult.Data = finalResultLod1;
@@ -160,33 +154,37 @@ namespace VoxToVFXFramework.Scripts.Data
 					case MaterialType._glass:
 						material.alpha = 1f - materialChunk.Alpha;
 						material.smoothness = materialChunk.Smoothness;
+						material.ior = materialChunk.Ior;
 						break;
 					case MaterialType._emit:
 						material.emission = UnityEngine.Color.Lerp(UnityEngine.Color.black, UnityEngine.Color.white, materialChunk.Emit);
 						material.emissionPower = Mathf.Lerp(2f, 12f, materialChunk.Flux / 4f);
+						material.ior = materialChunk.Ior;
 						break;
 					case MaterialType._media:
 						{
+							material.ior = materialChunk.Ior;
 							material.alpha = 1f - materialChunk.Alpha;
 							materialChunk.Properties.TryGetValue("_d", out string _d);
 							float.TryParse(_d, NumberStyles.Any, CultureInfo.InvariantCulture, out float density);
-							material.alpha *= density * 10f;
+							material.alpha *= density;
 						}
-
 						break;
 
 					case MaterialType._blend:
 						{
-							//material.alpha = 1f - materialChunk.Alpha; //No alpha for Blend for now
+							material.alpha = 1f - materialChunk.Alpha;
 							material.metallic = materialChunk.Metal;
 							material.smoothness = materialChunk.Smoothness;
-							if (materialChunk.Properties.TryGetValue("_media_type", out string mediaType) && mediaType == "_emit")
+							material.ior = materialChunk.Ior;
+
+							if (materialChunk.Properties.TryGetValue("_media", out string mediaType) && mediaType == "2")
 							{
 								materialChunk.Properties.TryGetValue("_d", out string _d);
 								float.TryParse(_d, NumberStyles.Any, CultureInfo.InvariantCulture, out float density);
 
 								material.emission = UnityEngine.Color.Lerp(UnityEngine.Color.black, UnityEngine.Color.white, materialChunk.Emit);
-								material.emissionPower = density * 10f;
+								material.emissionPower = density;
 							}
 						}
 
@@ -200,30 +198,12 @@ namespace VoxToVFXFramework.Scripts.Data
 			Materials = materials;
 		}
 
-		
-		private void WriteRenderSettings(VoxModelCustom voxModel)
-		{
-			foreach (RendererSettingChunk rendererSettingChunk in voxModel.RendererSettingChunks)
-			{
-				if (rendererSettingChunk.Type == RenderSettingType._edge)
-				{
-					EdgeSetting = rendererSettingChunk;
-				}
 
-				if (rendererSettingChunk.Type == RenderSettingType._setting)
-				{
-					int activeEdge = Convert.ToInt32(rendererSettingChunk.Attributes["_edge"]);
-					if (activeEdge == 0)
-					{
-						EdgeSetting.Attributes["_width"] = "0";
-					}
-				}
-			}
-		}
-		
-		private static UnsafeHashMap<int, VoxelData> ComputeLod(UnsafeHashMap<int, VoxelData> data, int3 worldChunkPosition, int step, int moduloCheck)
+
+
+		private static UnsafeParallelHashMap<int, VoxelData> ComputeLod(UnsafeParallelHashMap<int, VoxelData> data, int3 worldChunkPosition, int step, int moduloCheck)
 		{
-			UnsafeHashMap<int, VoxelData> resultLod1 = new UnsafeHashMap<int, VoxelData>(data.Count(), Allocator.Persistent);
+			UnsafeParallelHashMap<int, VoxelData> resultLod1 = new UnsafeParallelHashMap<int, VoxelData>(data.Count(), Allocator.Persistent);
 			ComputeLodJob computeLodJob = new ComputeLodJob()
 			{
 				VolumeSize = ChunkVolume,
@@ -239,7 +219,7 @@ namespace VoxToVFXFramework.Scripts.Data
 			return resultLod1;
 		}
 
-		private static NativeList<VoxelData> ComputeRotation(UnsafeHashMap<int, VoxelData> data, UnsafeHashMap<int, UnsafeHashMap<int, VoxelData>> worldDataPositions, NativeArray<VoxelMaterialVFX> materials, int step, int3 worldChunkPosition)
+		private static NativeList<VoxelData> ComputeRotation(UnsafeParallelHashMap<int, VoxelData> data, UnsafeParallelHashMap<int, UnsafeParallelHashMap<int, VoxelData>> worldDataPositions, NativeArray<VoxelMaterialVFX> materials, int step, int3 worldChunkPosition)
 		{
 			NativeArray<int> keys = data.GetKeyArray(Allocator.Persistent);
 			NativeList<VoxelData> result = new NativeList<VoxelData>(data.Count(), Allocator.Persistent);

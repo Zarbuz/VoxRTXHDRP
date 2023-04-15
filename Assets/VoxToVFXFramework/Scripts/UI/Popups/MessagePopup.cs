@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 using VoxToVFXFramework.Scripts.Localization;
 using VoxToVFXFramework.Scripts.UI.Popups.Descriptor;
 using VoxToVFXFramework.Scripts.UI.Popups.Popup;
@@ -65,6 +64,8 @@ namespace VoxToVFXFramework.Scripts.UI.Popups
 					popupDescriptor);
 			}
 		}
+
+		
 
 		public static void ShowOrUpdateCurrent(string message, LogType logType, MessagePopupUnicityTag unicityTag)
 		{
@@ -275,5 +276,7 @@ namespace VoxToVFXFramework.Scripts.UI.Popups
 		}
 
 		#endregion
+
+
 	}
 }

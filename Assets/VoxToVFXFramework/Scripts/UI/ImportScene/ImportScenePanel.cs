@@ -1,4 +1,5 @@
-﻿using SFB;
+﻿using System.Collections.Generic;
+using SFB;
 using System.Globalization;
 using TMPro;
 using UnityEngine;
@@ -8,6 +9,7 @@ using VoxToVFXFramework.Scripts.Managers;
 
 namespace VoxToVFXFramework.Scripts.UI.ImportScene
 {
+	//For internal usage only, should not be used anymore
 	public class ImportScenePanel : MonoBehaviour
 	{
 		public enum EDataImportType
@@ -56,23 +58,13 @@ namespace VoxToVFXFramework.Scripts.UI.ImportScene
 
 		#endregion
 
-		#region ConstStatic
-
-		private const int MAX_STEPS_ON_IMPORT = 2;
-
-		#endregion
-
 		#region UnityMethods
 
 		private void OnEnable()
 		{
 			mImportButtonHighlightable = OpenFileClicked.GetComponent<ButtonHighlightable>();
 			OpenFileClicked.onClick.AddListener(OnOpenFileClicked);
-
-			Title.text = DataImportTypeState == EDataImportType.VOX ? LocalizationKeys.IMPORT_SCENE_TITLE.Translate() : LocalizationKeys.OPEN_SCENE_TITLE.Translate();
-			SubTitle.text = DataImportTypeState == EDataImportType.VOX ? LocalizationKeys.IMPORT_SCENE_SUBTITLE.Translate() : LocalizationKeys.OPEN_SCENE_SUBTITLE.Translate();
-
-			ImportState = EImportState.NORMAL;
+			
 			VoxelDataCreatorManager.Instance.LoadProgressCallback += OnLoadProgressUpdate;
 			VoxelDataCreatorManager.Instance.LoadFinishedCallback += OnLoadVoxFinished;
 
@@ -103,6 +95,11 @@ namespace VoxToVFXFramework.Scripts.UI.ImportScene
 		public void Initialize(EDataImportType importType)
 		{
 			DataImportTypeState = importType;
+
+			Title.text = DataImportTypeState == EDataImportType.VOX ? LocalizationKeys.IMPORT_SCENE_TITLE.Translate() : LocalizationKeys.OPEN_SCENE_TITLE.Translate();
+			SubTitle.text = DataImportTypeState == EDataImportType.VOX ? LocalizationKeys.IMPORT_SCENE_SUBTITLE.Translate() : LocalizationKeys.OPEN_SCENE_SUBTITLE.Translate();
+
+			ImportState = EImportState.NORMAL;
 		}
 
 		#endregion
@@ -133,25 +130,22 @@ namespace VoxToVFXFramework.Scripts.UI.ImportScene
 			}
 		}
 
-		private void OnLoadProgressUpdate(int step, float progress)
+		private void OnLoadProgressUpdate(float progress)
 		{
-			CanvasPlayerPCManager.Instance.PauseLockedState = true;
 			ImportState = EImportState.IMPORT_IN_PROGRESS;
-			ProgressStepText.text = $"Step: {step}/{MAX_STEPS_ON_IMPORT}";
+			ProgressStepText.text = $"Step: {VoxelDataCreatorManager.Instance.MainStep}/{VoxelDataCreatorManager.MAX_STEPS_ON_IMPORT}";
 			ProgressText.text = $"{progress.ToString("P", CultureInfo.InvariantCulture)}";
 			ProgressBarFilled.fillAmount = progress;
 		}
 
-		private void OnLoadVoxFinished()
+		private void OnLoadVoxFinished(string outputZip, List<string> outputChunkPaths)
 		{
 			ImportState = EImportState.NORMAL;
-			CanvasPlayerPCManager.Instance.PauseLockedState = false;
 		}
 
 		private void OnLoadCustomFinished()
 		{
 			CanvasPlayerPCManager.Instance.GenericClosePanel();
-			CanvasPlayerPCManager.Instance.PauseLockedState = false;
 		}
 		#endregion
 	}

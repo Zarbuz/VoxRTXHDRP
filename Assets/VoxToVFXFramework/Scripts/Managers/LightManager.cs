@@ -8,16 +8,19 @@ public class LightManager : ModuleSingleton<LightManager>
 	private Light mLight;
 
 	#endregion
+
 	#region UnityMethods
 
 	protected override void OnAwake()
 	{
-		mLight = FindObjectOfType<Light>();
+		mLight = FindFirstObjectByType<Light>();
 	}
 
 	#endregion
 
 	#region PublicMethods
+
+	
 
 	public Vector3 GetCurrentRotation()
 	{

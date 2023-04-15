@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.HighDefinition;
 using VoxToVFXFramework.Scripts.Singleton;
@@ -25,9 +24,30 @@ namespace VoxToVFXFramework.Scripts.Managers
 			mVolume.profile.TryGet(typeof(DepthOfField), out DepthOfField);
 		}
 
+		protected override void OnStart()
+		{
+			RuntimeVoxManager.Instance.LoadFinishedCallback += OnVoxLoadFinished;
+			RuntimeVoxManager.Instance.UnloadFinishedCallback += OnVoxUnloadFinished;
+		}
+
+
+		private void OnDestroy()
+		{
+			if (RuntimeVoxManager.Instance != null)
+			{
+				RuntimeVoxManager.Instance.LoadFinishedCallback -= OnVoxLoadFinished;
+				RuntimeVoxManager.Instance.UnloadFinishedCallback -= OnVoxUnloadFinished;
+			}
+		}
+
 		#endregion
 
 		#region PublicMethods
+
+		public void SetActiveVolume(bool active)
+		{
+			mVolume.enabled = active;
+		}
 
 		public void SetEdgePostProcess(float intensity, Color color)
 		{
@@ -51,59 +71,26 @@ namespace VoxToVFXFramework.Scripts.Managers
 			DepthOfField.focusMode = new DepthOfFieldModeParameter(DepthOfFieldMode.Manual);
 		}
 
-		public void SetQualityLevel(int index)
+		public void SetPathTracing(bool active)
 		{
-			ScalableSettingLevelParameter scalableSettingLevelParameter;
-			switch (index)
-			{
-				case 0:
-					scalableSettingLevelParameter = new ScalableSettingLevelParameter((int)ScalableSettingLevelParameter.Level.High, false, true);
-					break;
-				case 1:
-					scalableSettingLevelParameter = new ScalableSettingLevelParameter((int)ScalableSettingLevelParameter.Level.Medium, false, true);
-					break;
-				case 2:
-					scalableSettingLevelParameter = new ScalableSettingLevelParameter((int)ScalableSettingLevelParameter.Level.Low, false, true);
-					break;
-				default:
-					scalableSettingLevelParameter = new ScalableSettingLevelParameter((int)ScalableSettingLevelParameter.Level.High, false, true);
-					break;
-
-			}
-
-			if (mVolume.profile.TryGet(typeof(AmbientOcclusion), out AmbientOcclusion ambientOcclusion))
-			{
-				ambientOcclusion.quality = scalableSettingLevelParameter;
-			}
-
-			if (mVolume.profile.TryGet(typeof(Fog), out Fog fog))
-			{
-				fog.quality = scalableSettingLevelParameter;
-			}
-
-			if (mVolume.profile.TryGet(typeof(GlobalIllumination), out GlobalIllumination globalIllumination))
-			{
-				globalIllumination.quality = scalableSettingLevelParameter;
-			}
-
-			if (mVolume.profile.TryGet(typeof(Bloom), out Bloom bloom))
-			{
-				bloom.quality = scalableSettingLevelParameter;
-			}
-
-			if (mVolume.profile.TryGet(typeof(ScreenSpaceReflection), out ScreenSpaceReflection screenSpaceReflection))
-			{
-				screenSpaceReflection.quality = scalableSettingLevelParameter;
-			}
-
-			if (mVolume.profile.TryGet(typeof(DepthOfField), out DepthOfField depthOfField))
-			{
-				depthOfField.quality = scalableSettingLevelParameter;
-			}
+			mVolume.profile.TryGet(typeof(PathTracing), out PathTracing pathTracing);
+			pathTracing.active = active;
 		}
 
 		#endregion
 
+		#region PrivateMethods
 
+		private void OnVoxLoadFinished()
+		{
+			SetActiveVolume(true);
+		}
+
+		private void OnVoxUnloadFinished()
+		{
+			SetActiveVolume(false);
+		}
+
+		#endregion
 	}
 }

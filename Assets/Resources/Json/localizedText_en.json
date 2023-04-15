@@ -29,6 +29,38 @@
       "Value": "Exit"
     },
     {
+      "Key": "[LOGIN]",
+      "Value": "Login"
+    },
+    {
+      "Key": "[LOGOUT]",
+      "Value": "Logout"
+    },
+    {
+      "Key": "[NAME]",
+      "Value": "Name"
+    },
+    {
+      "Key": "[USERNAME]",
+      "Value": "Username"
+    },
+    {
+      "Key": "[OPTIONAL]",
+      "Value": "Optional"
+    },
+    {
+      "Key": "[BACK]",
+      "Value": "Back"
+    },
+    {
+      "Key": "[CONTINUE]",
+      "Value": "Continue"
+    },
+    {
+      "Key": "[IMAGE]",
+      "Value": "Image"
+    },
+    {
       "Key": "[PAUSE_CONTINUE_BUTTON]",
       "Value": "Continue"
     },
@@ -327,6 +359,766 @@
     {
       "Key": "[PHOTO_EXPOSURE]",
       "Value": "Exposure"
+    },
+    {
+      "Key": "[TOOLBAR_CONNECT_WALLET]",
+      "Value": "Connect Wallet"
+    },
+    {
+      "Key": "[LOGIN_SCAN_QR_CODE]",
+      "Value": "Scan QR Code With Your Wallet"
+    },
+    {
+      "Key": "[TOOLBAR_CREATE]",
+      "Value": "Create"
+    },
+    {
+      "Key": "[EDIT_PROFILE_TITLE]",
+      "Value": "Edit your profile"
+    },
+    {
+      "Key": "[EDIT_PROFILE_ENTER_DETAILS]",
+      "Value": "Enter your details"
+    },
+    {
+      "Key": "[EDIT_PROFILE_ADD_BIO]",
+      "Value": "Add a short bio"
+    },
+    {
+      "Key": "[EDIT_PROFILE_ENTER_BIO]",
+      "Value": "Enter a short bio"
+    },
+    {
+      "Key": "[EDIT_PROFILE_UPLOAD_PICTURE]",
+      "Value": "Upload profile image"
+    },
+    {
+      "Key": "[EDIT_PROFILE_RECOMMENDED_SIZE]",
+      "Value": "Recommended size: \n1000x1000px.\nJPG, PNG, or GIF.\n10MB max size."
+    },
+    {
+      "Key": "[EDIT_PROFILE_SELECT_PICTURE]",
+      "Value": "Select picture…"
+    },
+    {
+      "Key": "[EDIT_PROFILE_DELETE_PICTURE]",
+      "Value": "Delete picture"
+    },
+    {
+      "Key": "[EDIT_PROFILE_MISSING_USERNAME]",
+      "Value": "Username field is mandatory and must contains at least 3 characters"
+    },
+    {
+      "Key": "[EDIT_PROFILE_USERNAME_NO_SPACE]",
+      "Value": "The username field must not contain spaces or special characters"
+    },
+    {
+      "Key": "[WALLET_SIGNING]",
+      "Value": "Signing With Your Wallet"
+    },
+    {
+      "Key": "[EDIT_PROFILE_UPDATE_SUCCESS]",
+      "Value": "Your information has been successfully updated"
+    },
+    {
+      "Key": "[EDIT_PROFILE_UPDATE_FAILED]",
+      "Value": "Error updating your information"
+    },
+    {
+      "Key": "[EDIT_PROFILE_USERNAME_NOT_AVAILABLE]",
+      "Value": "This username  is not available. Please choose another"
+    },
+    {
+      "Key": "[EDIT_PROFILE_ADD_LINKS]",
+      "Value": "Add links to your social media profiles"
+    },
+    {
+      "Key": "[EDIT_PROFILE_DISCORD_PLACEHOLDER]",
+      "Value": "Include #Code"
+    },
+    {
+      "Key": "[EDIT_PROFILE_YOUTUBE_PLACEHOLDER]",
+      "Value": "Channel URL"
+    },
+    {
+      "Key": "[EDIT_PROFILE_FACEBOOK_PLACEHOLDER]",
+      "Value": "Facebook Username"
+    },
+    {
+      "Key": "[EDIT_PROFILE_WEBSITE_PLACEHOLDER]",
+      "Value": "Website URL"
+    },
+    {
+      "Key": "[EDIT_PROFILE_TWITCH_PLACEHOLDER]",
+      "Value": "Twitch Username"
+    },
+    {
+      "Key": "[EDIT_PROFILE_TIKTOK_PLACEHOLDER]",
+      "Value": "TikTok Username"
+    },
+    {
+      "Key": "[EDIT_PROFILE_SNAPCHAT_PLACEHOLDER]",
+      "Value": "Snapchat Username"
+    },
+    {
+      "Key": "[COLLECTION_CREATE_TITLE]",
+      "Value": "Create on VoxVerse"
+    },
+    {
+      "Key": "[COLLECTION_CREATE_SUBTITLE]",
+      "Value": "Your collections"
+    },
+    {
+      "Key": "[COLLECTION_CREATE_HELP_BUTTON]",
+      "Value": "Learn about\nCollections on VoxVerse"
+    },
+    {
+      "Key": "[COLLECTION_CREATE_NEW_BUTTON]",
+      "Value": "Create a new collection"
+    },
+    {
+      "Key": "[COLLECTION_HELP_INFO_TEXT]",
+      "Value": "On VoxVerse, Collections are smart contracts that can house NFTs. When you mint NFTs to a collection, the smart contract acts as a container keeping all of the work in one place. Having your own smart contract gives creators full control over their work. \n\nYou own its record and full provenance from the very beginning, and you can take the collection anywhere else you’d like in the future. Minting work on your own smart contract ensures provenance for artists and collectors."
+    },
+    {
+      "Key": "[COLLECTION_CREATE_TITLE2]",
+      "Value": "Create a collection"
+    },
+    {
+      "Key": "[COLLECTION_CREATE_SUBTITLE_DEPLOY]",
+      "Value": "Deploy a smart contract to showcase NFTs"
+    },
+    {
+      "Key": "[COLLECTION_SETUP_SMART_CONTRACT_TITLE]",
+      "Value": "Set up your smart contract"
+    },
+    {
+      "Key": "[COLLECTION_SETUP_SMART_CONTRACT_SUBTITLE]",
+      "Value": "The following details are used to create your own smart contract. They will be added to the blockchain and cannot be edited."
+    },
+    {
+      "Key": "[COLLECTION_HELP_SMART_CONTRACT]",
+      "Value": "A smart contract is a program that is recorded on the blockchain. On VoxVerse, you can think of smart contracts for collections as a folder that contains NFTs.\n\nWhen you mint NFTs to a smart contract, they are all kept in one place. Having a smart contract gives creators the most control over their collection, and can allow them to take the collection anywhere else they'd like to in the future."
+    },
+    {
+      "Key": "[COLLECTION_NAME_LABEL]",
+      "Value": "Collection Name"
+    },
+    {
+      "Key": "[COLLECTION_SYMBOL_LABEL]",
+      "Value": "Collection Symbol"
+    },
+    {
+      "Key": "[COLLECTION_ARTWORKS]",
+      "Value": "0 Artworks"
+    },
+    {
+      "Key": "[COLLECTION_HELP_SMART_CONTRACT_TITLE]",
+      "Value": "Learn more about smart contracts"
+    },
+    {
+      "Key": "[COLLECTION_WAITING_CONFIRMATION_TITLE]",
+      "Value": "Waiting for confirmation…"
+    },
+    {
+      "Key": "[COLLECTION_CONFIRM_VIA_WALLET]",
+      "Value": "Confirm via your wallet…"
+    },
+    {
+      "Key": "[COLLECTION_SMART_CONTRACT_DEPLOYMENT_TITLE]",
+      "Value": "The smart contract is being deployed to the Ethereum blockchain"
+    },
+    {
+      "Key": "[COLLECTION_SMART_CONTRACT_CREATION_TITLE]",
+      "Value": "Your smart contract is being created…"
+    },
+    {
+      "Key": "[COLLECTION_CONFIRM_TRANSACTION_TITLE]",
+      "Value": "Confirm this transaction in your wallet"
+    },
+    {
+      "Key": "[COLLECTION_CONGRATULATIONS_TITLE]",
+      "Value": "Congratulations ! Your collection has been created !"
+    },
+    {
+      "Key": "[COLLECTION_EXECUTE_CONTRACT_ERROR]",
+      "Value": "Error while executing smart contract"
+    },
+    {
+      "Key": "[COLLECTION_CREATE_RETRY]",
+      "Value": "Retry"
+    },
+    {
+      "Key": "[EDIT_PROFILE_FILE_TOO_BIG]",
+      "Value": "Sorry but this file is too big. Limit: {0} MB"
+    },
+    {
+      "Key": "[EDIT_PROFILE_UPLOAD_COVER_IMAGE]",
+      "Value": "Upload a cover image"
+    },
+    {
+      "Key": "[EDIT_PROFILE_RECOMMENDED_SIZE_BANNER]",
+      "Value": "Recommended size:\n1500x500px.\nJPG, PNG, or GIF.\n10MB max size."
+    },
+    {
+      "Key": "[CREATE_UPLOAD_TITLE]",
+      "Value": "Upload a Vox file"
+    },
+    {
+      "Key": "[CREATION_CONVERSION_DESCRIPTION]",
+      "Value": "VoxVerse is preparing your VOX file in an internal format that will be optimized. This action will take a few moments"
+    },
+    {
+      "Key": "[CREATION_CONVERSION_TITLE]",
+      "Value": "Your VOX file is being converted"
+    },
+    {
+      "Key": "[CREATION_UPLOAD_TITLE]",
+      "Value": "Uploading to IPFS"
+    },
+    {
+      "Key": "[CREATION_UPLOAD_DESCRIPTION]",
+      "Value": "The InterPlanetary File System, known as IPFS, is a peer-to-peer network for sharing data in a distributed file system."
+    },
+    {
+      "Key": "[CREATION_UPLOAD_ERROR]",
+      "Value": "An error occurs when uploading to IPFS"
+    },
+    {
+      "Key": "[CREATION_MINT_NFT_TITLE]",
+      "Value": "Mint an NFT"
+    },
+    {
+      "Key": "[CREATION_MINT_NFT_ADD_DETAILS]",
+      "Value": "Add details"
+    },
+    {
+      "Key": "[CREATION_MINT_NFT_DESCRIPTION]",
+      "Value": "Once your NFT is minted to the Ethereum blockchain, you will not be able to edit or update any of its information."
+    },
+    {
+      "Key": "[CREATION_MINT_DESCRIPTION_TITLE]",
+      "Value": "Description"
+    },
+    {
+      "Key": "[CREATION_MINT_COLLECTION_TITLE]",
+      "Value": "Collection"
+    },
+    {
+      "Key": "[CREATION_MINT_NAME_TOO_SHORT]",
+      "Value": "The item name is either missing or too short"
+    },
+    {
+      "Key": "[CREATION_MINT_MISSING_IMAGE]",
+      "Value": "A picture is required"
+    },
+    {
+      "Key": "[MINT_IN_PROGRESS_TITLE]",
+      "Value": "Your NFT is being minted…"
+    },
+    {
+      "Key": "[CREATION_CREATE_SPLIT]",
+      "Value": "Create a split"
+    },
+    {
+      "Key": "[CREATION_CREATE_SPLIT_DESCRIPTION]",
+      "Value": "Enable a split to automatically divide any funds or royalties earned from the NFT with up to four recipients, including yourself."
+    },
+    {
+      "Key": "[MINT_IN_PROGRESS_DESCRIPTION]",
+      "Value": "Your item is being minted on the Ethereum blockchain"
+    },
+    {
+      "Key": "[MINT_SUCCESS_DESCRIPTION]",
+      "Value": "Congratulations! Your NFT has officially been minted on the Ethereum blockchain. Please note that the NFT may take a few minutes to appear in the app."
+    },
+    {
+      "Key": "[MINT_SUCCESS_TITLE]",
+      "Value": "Your NFT has been minted!"
+    },
+    {
+      "Key": "[MINT_SUCCESS_VIEW_COLLECTION]",
+      "Value": "View collection"
+    },
+    {
+      "Key": "[MINT_SUCCESS_SET_BUY_PRICE]",
+      "Value": "Change price"
+    },
+    {
+      "Key": "[PREVIEW]",
+      "Value": "Preview"
+    },
+    {
+      "Key": "[LOADING_SCENE_TITLE]",
+      "Value": "Loading scene"
+    },
+    {
+      "Key": "[LOADING_SCENE_DESCRIPTION]",
+      "Value": "VoxVerse is loading the 3D scene. Exploration in a few moments…"
+    },
+    {
+      "Key": "[PREVIEW_BACK_CREATION]",
+      "Value": "Back NFT creation"
+    },
+    {
+      "Key": "[PREVIEW_MISSING_TITLE]",
+      "Value": "Missing title"
+    },
+    {
+      "Key": "[PREVIEW_MISSING_DESCRIPTION]",
+      "Value": "No description"
+    },
+    {
+      "Key": "[PROFILE_LIVE_AUCTION]",
+      "Value": "Live Auction"
+    },
+    {
+      "Key": "[PROFILE_BUY_NOW]",
+      "Value": "Buy Now"
+    },
+    {
+      "Key": "[PROFILE_RESERVE_PRICE]",
+      "Value": "Reserve Price"
+    },
+    {
+      "Key": "[PROFILE_ACTIVE_OFFERS]",
+      "Value": "Active Offers"
+    },
+    {
+      "Key": "[MINTED_ON_DATE]",
+      "Value": "Minted on {0}"
+    },
+    {
+      "Key": "[LOAD_VOX_MODEL]",
+      "Value": "Load Vox Model"
+    },
+    {
+      "Key": "[LOADING_DOWNLOAD_MODEL]",
+      "Value": "Downloading the scene in progress"
+    },
+    {
+      "Key": "[DETAILS_CREATED_BY]",
+      "Value": "Created by"
+    },
+    {
+      "Key": "[DETAILS_COLLECTION]",
+      "Value": "Collection"
+    },
+    {
+      "Key": "[DETAILS_DESCRIPTION]",
+      "Value": "Description"
+    },
+    {
+      "Key": "[DETAILS_DETAILS]",
+      "Value": "Details"
+    },
+    {
+      "Key": "[DETAILS_VIEW_ETHERSCAN]",
+      "Value": "View on Etherscan"
+    },
+    {
+      "Key": "[DETAILS_VIEW_METADATA]",
+      "Value": "View metadata"
+    },
+    {
+      "Key": "[DETAILS_VIEW_IPFS]",
+      "Value": "View on IPFS"
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_EDIT]",
+      "Value": "Edit collection"
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_OF]",
+      "Value": "Collection Of"
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_OWNED_BY]",
+      "Value": "Owned By"
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_FLOOR_PRICE]",
+      "Value": "Floor Price"
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_TOTAL_SALES]",
+      "Value": "Total Sales"
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_CUSTOMIZE_TITLE]",
+      "Value": "Customize your collection"
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_CUSTOMIZE_DESCRIPTION]",
+      "Value": "Before you mint an NFT to your collection, customize it by uploading a logo, cover image, and description."
+    },
+    {
+      "Key": "[EDIT_COLLECTION_TITLE]",
+      "Value": "Edit Collection"
+    },
+    {
+      "Key": "[EDIT_COLLECTION_LOGO]",
+      "Value": "Collection Logo"
+    },
+    {
+      "Key": "[EDIT_COLLECTION_COVER_IMAGE]",
+      "Value": "Cover Image"
+    },
+    {
+      "Key": "[EDIT_COLLECTION_DESCRIPTION]",
+      "Value": "Description"
+    },
+    {
+      "Key": "[EDIT_COLLECTION_SAVE_CHANGES]",
+      "Value": "Save changes"
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_NO_ITEM_TITLE]",
+      "Value": "Nothing to see here"
+    },
+    {
+      "Key": "[DETAILS_COLLECTION_NO_ITEM_DESCRIPTION]",
+      "Value": "Come back later to see new works in the collection"
+    },
+    {
+      "Key": "[SET_BUY_PRICE_TITLE]",
+      "Value": "Set a Buy Now price"
+    },
+    {
+      "Key": "[SET_BUY_PRICE_DESCRIPTION]",
+      "Value": "Once a Buy Now price is set, the NFT can be purchased instantly. You can change the Buy Now price at any time."
+    },
+    {
+      "Key": "[SET_BUY_PRICE_RECEIVE]",
+      "Value": "You'll receive"
+    },
+    {
+      "Key": "[SET_BUY_MARKETPLACE_FEE]",
+      "Value": "Marketplace fee"
+    },
+    {
+      "Key": "[SET_BUY_AMOUNT_REQUIRED]",
+      "Value": "Amount is required"
+    },
+    {
+      "Key": "[MUST_BE_AT_LEAST_X_LABEL]",
+      "Value": "Must be at least {0} ETH"
+    },
+    {
+      "Key": "[SET_BUY_PRICE]",
+      "Value": "Set Price"
+    },
+    {
+      "Key": "[SET_BUY_PRICE_WAITING_TITLE]",
+      "Value": "Setting Buy Price …"
+    },
+    {
+      "Key": "[SET_BUY_PRICE_WAITING_DESCRIPTION]",
+      "Value": "The Buy Now price is being set on the Ethereum blockchain. "
+    },
+    {
+      "Key": "[BUY_NOW]",
+      "Value": "Buy Now"
+    },
+    {
+      "Key": "[FIXED_PRICE_TO_BUY]",
+      "Value": "Fixed price to buy"
+    },
+    {
+      "Key": "[AUCTION]",
+      "Value": "Auction"
+    },
+    {
+      "Key": "[24H_WITH_RESERVE_PRICE]",
+      "Value": "24 hr with reserve price"
+    },
+    {
+      "Key": "[LIST]",
+      "Value": "List"
+    },
+    {
+      "Key": "[BURN_NFT]",
+      "Value": "Burn NFT"
+    },
+    {
+      "Key": "[TRANSFER_NFT]",
+      "Value": "Transfer NFT"
+    },
+    {
+      "Key": "[TRANSFER_NFT_DESCRIPTION]",
+      "Value": "Transfer the NFT to another user or wallet by entering an Ethereum address below."
+    },
+    {
+      "Key": "[TRANSFER_NFT_ADDRESS_MANDATORY]",
+      "Value": "To address is required"
+    },
+    {
+      "Key": "[TRANSFER_NFT_ADDRESS_INVALID]",
+      "Value": "Invalid address"
+    },
+    {
+      "Key": "[TRANSFER_NFT_WAITING_TITLE]",
+      "Value": "Transferring …"
+    },
+    {
+      "Key": "[TRANSFER_NFT_WAITING_DESCRIPTION]",
+      "Value": "The NFT is being transferred on the Ethereum blockchain"
+    },
+    {
+      "Key": "[TRANSFER_NFT_SUCCESS_TITLE]",
+      "Value": "This NFT has been transferred"
+    },
+    {
+      "Key": "[TRANSFER_NFT_SUCCESS_DESCRIPTION]",
+      "Value": "This NFT has been transferred to the new owner."
+    },
+    {
+      "Key": "[BURN_NFT_DESCRIPTION]",
+      "Value": "Burning an NFT destroys the NFT and removes it from your creator profile. Please note, this action cannot be reversed."
+    },
+    {
+      "Key": "[SET_BUY_PRICE_SUCCESS_TITLE]",
+      "Value": "Buy Now Price set"
+    },
+    {
+      "Key": "[SET_BUY_PRICE_SUCCESS_DESCRIPTION]",
+      "Value": "You have set a Buy Price of {0} ETH for the NFT."
+    },
+    {
+      "Key": "[VIEW_NFT]",
+      "Value": "View NFT"
+    },
+    {
+      "Key": "[CHANGE_BUY_PRICE]",
+      "Value": "Change price"
+    },
+    {
+      "Key": "[REMOVE]",
+      "Value": "Remove"
+    },
+    {
+      "Key": "[CHANGE_BUY_NOW_PRICE_TITLE]",
+      "Value": "Change Buy Now price"
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_PRICE_TITLE]",
+      "Value": "Remove Buy Now price"
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_PRICE_DESCRIPTION]",
+      "Value": "When you remove the Buy Now price, the NFT will be taken out of escrow, unlisted, and returned to your wallet."
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_WAITING_PRICE_TITLE]",
+      "Value": "Canceling Buy Now price…"
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_WAITING_PRICE_DESCRIPTION]",
+      "Value": "The Buy Now price is being canceled on the Ethereum blockchain."
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_REMOVED_TITLE]",
+      "Value": "Buy Now price was removed"
+    },
+    {
+      "Key": "[REMOVE_BUY_NOW_REMOVED_DESCRIPTION]",
+      "Value": "Your NFT Buy Now price has been removed from our marketplace."
+    },
+    {
+      "Key": "[PROFILE_ORDER_BY_MOST_ACTIVE]",
+      "Value": "Most active"
+    },
+    {
+      "Key": "[PROFILE_ORDER_BY_PRICE_HIGHEST_FIRST]",
+      "Value": "Price : highest"
+    },
+    {
+      "Key": "[PROFILE_ORDER_BY_PRICE_LOWEST_FIRST]",
+      "Value": "Price : lowest"
+    },
+    {
+      "Key": "[PROFILE_ORDER_BY_NEWEST]",
+      "Value": "Newest"
+    },
+    {
+      "Key": "[PROFILE_ORDER_BY_OLDEST]",
+      "Value": "Oldest"
+    },
+    {
+      "Key": "[FOLLOW]",
+      "Value": "Follow"
+    },
+    {
+      "Key": "[UNFOLLOW]",
+      "Value": "Unfollow"
+    },
+    {
+      "Key": "[FOLLOWING]",
+      "Value": "Following"
+    },
+    {
+      "Key": "[BURN_COLLECTION]",
+      "Value": "Self-destruct"
+    },
+    {
+      "Key": "[BURN_COLLECTION_TITLE]",
+      "Value": "Self-destruct this collection"
+    },
+    {
+      "Key": "[BURN_COLLECTION_DESCRIPTION]",
+      "Value": "Self-destructing a collection destroys the collection and removes it from your creator profile. Please note, this action cannot be reversed."
+    },
+    {
+      "Key": "[BURN_COLLECTION_WAITING_TITLE]",
+      "Value": "This collection is self-destructing…"
+    },
+    {
+      "Key": "[BURN_COLLECTION_WAITING_DESCRIPTION]",
+      "Value": "Your transaction has been submitted, and the collection will self-destruct shortly. "
+    },
+    {
+      "Key": "[BURN_COLLECTION_SUCCESS_TITLE]",
+      "Value": "This collection has self-destructed."
+    },
+    {
+      "Key": "[BURN_COLLECTION_SUCCESS_DESCRIPTION]",
+      "Value": "This collection has successfully self-destructed, and it will no longer be displayed on VoxVerse."
+    },
+    {
+      "Key": "[BACK_TO_PROFILE]",
+      "Value": "Back to profile"
+    },
+    {
+      "Key": "[BURN_NFT_WAITING_TITLE]",
+      "Value": "Burning…"
+    },
+    {
+      "Key": "[BURN_NFT_WAITING_DESCRIPTION]",
+      "Value": "The NFT being burned on the Ethereum blockchain."
+    },
+    {
+      "Key": "[BURN_NFT_SUCCESS_TITLE]",
+      "Value": "This NFT has been burned"
+    },
+    {
+      "Key": "[BURN_NFT_SUCCESS_DESCRIPTION]",
+      "Value": "This NFT has been burned, and it will no longer be displayed on VoxVerse."
+    },
+    {
+      "Key": "[PROVENANCE_LABEL]",
+      "Value": "Provenance"
+    },
+    {
+      "Key": "[LAST_SOLD_LABEL]",
+      "Value": "Last Sold"
+    },
+    {
+      "Key": "[MAKE_OFFER_LABEL]",
+      "Value": "Make offer"
+    },
+    {
+      "Key": "[OWNED_BY_LABEL]",
+      "Value": "Owned By"
+    },
+    {
+      "Key": "[MINTED_BY_LABEL]",
+      "Value": "Minted By"
+    },
+    {
+      "Key": "[BOUGHT_BY_LABEL]",
+      "Value": "Bought by"
+    },
+    {
+      "Key": "[BUY_NOW_SET_LABEL]",
+      "Value": "Buy Now price set by"
+    },
+    {
+      "Key": "[BUY_NOW_REMOVED_LABEL]",
+      "Value": "Buy Now price removed by"
+    },
+    {
+      "Key": "[TRANSFERRED_FROM_TO_LABEL]",
+      "Value": "Transferred from {0} to {1}"
+    },
+    {
+      "Key": "[BUY_NOW_TITLE]",
+      "Value": "Buy Now"
+    },
+    {
+      "Key": "[BUY_NOW_DESCRIPTION]",
+      "Value": "Once the transaction is confirmed, the NFT will be sent to your wallet instantly."
+    },
+    {
+      "Key": "[AVAILABLE_BALANCE_LABEL]",
+      "Value": "Available Balance"
+    },
+    {
+      "Key": "[MARKETPLACE_BALANCE_LABEL]",
+      "Value": "Marketplace Balance"
+    },
+    {
+      "Key": "[WALLET_BALANCE_LABEL]",
+      "Value": "Wallet Balance"
+    },
+    {
+      "Key": "[BUY_NOW_NOT_ENOUGH_ETH]",
+      "Value": "You do not have enough ETH"
+    },
+    {
+      "Key": "[BUY_NOW_WAITING_TITLE]",
+      "Value": "Buying …"
+    },
+    {
+      "Key": "[BUY_NOW_WAITING_DESCRIPTION]",
+      "Value": "The sale is being confirmed on the Ethereum blockchain."
+    },
+    {
+      "Key": "[BUY_NOW_SUCCESS_TITLE]",
+      "Value": "You got it !"
+    },
+    {
+      "Key": "[BUY_NOW_SUCCESS_DESCRIPTION]",
+      "Value": "You got the NFT for {0} ETH"
+    },
+    {
+      "Key": "[PROFILE_NO_CREATED_ITEMS]",
+      "Value": "This user has not yet created any NFTs on VoxVerse"
+    },
+    {
+      "Key": "[PROFILE_NO_CREATED_COLLECTIONS]",
+      "Value": "This user has not created any collections yet on VoxVerse"
+    },
+    {
+      "Key": "[PROFILE_NO_OWNED_ITEMS]",
+      "Value": "This user does not own any NFTs on VoxVerse"
+    },
+    {
+      "Key": "[CONFIRM]",
+      "Value": "Confirm"
+    },
+    {
+      "Key": "[MAKE_OFFER_TITLE]",
+      "Value": "Make an Offer"
+    },
+    {
+      "Key": "[MAKE_OFFER_DESCRIPTION]",
+      "Value": "Once an Offer is sent, the owner will have 24 hours to accept. If the Offer expires, the funds will be available in your Marketplace Balance."
+    },
+    {
+      "Key": "[MAKE_OFFER_WAITING_TITLE]",
+      "Value": "Making the Offer …"
+    },
+    {
+      "Key": "[MAKE_OFFER_WAITING_DESCRIPTION]",
+      "Value": "Your Offer is being confirmed on the Ethereum blockchain."
+    },
+    {
+      "Key": "[MAKE_OFFER_SUCCESS_TITLE]",
+      "Value": "Offer made!"
+    },
+    {
+      "Key": "[MAKE_OFFER_SUCCESS_DESCRIPTION]",
+      "Value": "Your Offer has been sent to the owner. They have 24 hours to accept your offer. If not accepted, the Offer will expire and will be returned to your Marketplace Balance."
     },
     {
       "Key": "",

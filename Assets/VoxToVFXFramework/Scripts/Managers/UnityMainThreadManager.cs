@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UnityEngine;
 using VoxToVFXFramework.Scripts.Singleton;
 
 namespace VoxToVFXFramework.Scripts.Managers
@@ -64,6 +65,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 				}
 				catch (Exception ex)
 				{
+					Debug.LogError(ex);
 					tcs.TrySetException(ex);
 				}
 			}

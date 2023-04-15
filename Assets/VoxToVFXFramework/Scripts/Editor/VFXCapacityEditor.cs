@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.VFX;
 using VoxToVFXFramework.Scripts.Managers;
-using VoxToVFXFramework.Scripts.ScriptableObjets;
+using VoxToVFXFramework.Scripts.ScriptableObjects;
 
 public class VFXCapacityEditor : MonoBehaviour
 {

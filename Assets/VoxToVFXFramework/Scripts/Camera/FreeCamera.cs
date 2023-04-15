@@ -67,7 +67,7 @@ namespace VoxToVFXFramework.Scripts.Camera
 
 		private void Update()
 		{
-			if (!RuntimeVoxManager.Instance.IsReady)
+			if (!RuntimeVoxManager.Instance.IsReady || CanvasPlayerPCManager.Instance.CanvasPlayerPcState != CanvasPlayerPCState.Closed)
 			{
 				return;
 			}

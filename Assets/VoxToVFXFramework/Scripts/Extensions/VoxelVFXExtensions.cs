@@ -8,22 +8,27 @@ namespace VoxToVFXFramework.Scripts.Extensions
 {
 	public static class VoxelVFXExtensions
 	{
-		public static float3 DecodePosition(this VoxelVFX voxel)
+		public static float4 DecodePosition(this VoxelVFX voxel)
 		{
 			uint x = voxel.position >> 24;
 			uint y = (voxel.position & 0xff0000) >> 16;
 			uint z = (voxel.position & 0xff00) >> 8;
 			uint colorIndex = (voxel.position & 0xff);
 
-			return new float3(x, y, z);
+			return new float4(x, y, z, colorIndex);
 		}
 
-		public static string DecodeAdditionalData(this VoxelVFX voxel)
+		public static VoxelAdditionalData DecodeAdditionalData(this VoxelVFX voxel)
 		{
 			uint rotationIndex = voxel.additionalData >> 16;
 			uint chunkIndex = voxel.additionalData & 0x0000FFFF;
 
-			return $"rotationIndex:{rotationIndex} chunkIndex: {chunkIndex}";
+			VoxelAdditionalData voxelAdditionalData = new VoxelAdditionalData();
+			voxelAdditionalData.ChunkIndex = (short)chunkIndex;
+			voxelAdditionalData.VoxelFace = (VoxelFace)rotationIndex;
+
+			return voxelAdditionalData;
+			//return $"rotationIndex:{rotationIndex} chunkIndex: {chunkIndex}";
 		}
 
 		public static uint CountVoxelFaceFlags(this VoxelFace voxelFace)

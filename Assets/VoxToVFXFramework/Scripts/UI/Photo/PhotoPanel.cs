@@ -39,8 +39,6 @@ namespace VoxToVFXFramework.Scripts.UI.Photo
 			SaveButton.onClick.AddListener(OnSaveClicked);
 			CloseButton.onClick.AddListener(OnCloseClicked);
 
-			CameraManager.Instance.SetCameraState(eCameraState.FREE);
-
 			SpeedCameraSlider.SetValueWithoutNotify(CameraManager.Instance.SpeedCamera);
 			ExposureSlider.SetValueWithoutNotify(RuntimeVoxManager.Instance.ExposureWeight.Value);
 			mMainCamera = UnityEngine.Camera.main;
@@ -53,11 +51,6 @@ namespace VoxToVFXFramework.Scripts.UI.Photo
 
 			SaveButton.onClick.RemoveListener(OnSaveClicked);
 			CloseButton.onClick.RemoveListener(OnCloseClicked);
-
-			if (CameraManager.Instance != null)
-			{
-				CameraManager.Instance.SetCameraState(eCameraState.FIRST_PERSON);
-			}
 		}
 
 		#endregion
