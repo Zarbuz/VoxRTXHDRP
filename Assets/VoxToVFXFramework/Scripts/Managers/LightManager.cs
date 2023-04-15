@@ -8,6 +8,7 @@ public class LightManager : ModuleSingleton<LightManager>
 	private Light mLight;
 
 	#endregion
+
 	#region UnityMethods
 
 	protected override void OnAwake()
@@ -19,10 +20,7 @@ public class LightManager : ModuleSingleton<LightManager>
 
 	#region PublicMethods
 
-	public void SetMainLightActive(bool active)
-	{
-		mLight.gameObject.SetActive(active);
-	}
+	
 
 	public Vector3 GetCurrentRotation()
 	{

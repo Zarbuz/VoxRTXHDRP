@@ -1,6 +1,7 @@
 ﻿using System;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.VFX;
 
 namespace VoxToVFXFramework.Scripts.Data
@@ -37,6 +38,7 @@ namespace VoxToVFXFramework.Scripts.Data
 		public int LodLevel;
 		public int IsActive;
 		public int Length;
+		public int PathTracingHandleId;
 	}
 
 	public struct ChunkDataFile

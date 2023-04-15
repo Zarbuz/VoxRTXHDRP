@@ -1,4 +1,5 @@
-﻿using FileToVoxCore.Utils;
+﻿using FileToVoxCore.Schematics;
+using FileToVoxCore.Utils;
 using FileToVoxCore.Vox;
 using System;
 using System.Linq;
@@ -81,10 +82,10 @@ namespace VoxToVFXFramework.Scripts.Managers
 		public Wrapped<int> ExposureWeight = new Wrapped<int>(-15);
 
 		[HideInInspector] public NativeArray<ChunkVFX> Chunks;
+		[HideInInspector] public UnsafeParallelHashMap<int, UnsafeList<VoxelVFX>> LoadedData;
 
 		private NativeArray<bool> mMaterialAlpha;
 		private Transform PlayerPosition => FreeCameraTransform;
-		private UnsafeParallelHashMap<int, UnsafeList<VoxelVFX>> mChunksLoaded;
 		private VisualEffect mVisualEffect;
 		private GraphicsBuffer mPaletteBuffer;
 		private GraphicsBuffer mGraphicsBuffer;
@@ -115,7 +116,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 			Debug.Log("FileToVoxCore version: " + runtimeVersion.Version);
 			QualityManager.Instance.Initialize();
-			LightManager.Instance.SetMainLightActive(false);
 			ExposureWeight.OnValueChanged += RefreshExposureWeight;
 			DebugLod.OnValueChanged += RefreshDebugLod;
 
@@ -248,14 +248,14 @@ namespace VoxToVFXFramework.Scripts.Managers
 				mMaterialAlpha.Dispose();
 			}
 
-			if (mChunksLoaded.IsCreated)
+			if (LoadedData.IsCreated)
 			{
 				//TODO Check this dispose
-				foreach (KeyValue<int, UnsafeList<VoxelVFX>> item in mChunksLoaded)
+				foreach (KeyValue<int, UnsafeList<VoxelVFX>> item in LoadedData)
 				{
 					item.Value.Dispose();
 				}
-				mChunksLoaded.Dispose();
+				LoadedData.Dispose();
 			}
 
 			if (Materials != null)
@@ -318,12 +318,12 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		public void SetVoxelChunk(int chunkIndex, UnsafeList<VoxelVFX> list)
 		{
-			if (!mChunksLoaded.IsCreated)
+			if (!LoadedData.IsCreated)
 			{
-				mChunksLoaded = new UnsafeParallelHashMap<int, UnsafeList<VoxelVFX>>(Chunks.Length, Allocator.Persistent);
+				LoadedData = new UnsafeParallelHashMap<int, UnsafeList<VoxelVFX>>(Chunks.Length, Allocator.Persistent);
 			}
 
-			mChunksLoaded[chunkIndex] = list;
+			LoadedData[chunkIndex] = list;
 		}
 
 		public void OnChunkLoadedFinished()
@@ -368,27 +368,42 @@ namespace VoxToVFXFramework.Scripts.Managers
 			}.Schedule(Chunks.Length, 32);
 			computeVisibleChunkJob.Complete();
 			planes.Dispose();
-			
-			int totalActive = Chunks.Count(chunk => chunk.IsActive == 1);
-			int totalLength = Chunks.Where(chunk => chunk.IsActive == 1).Sum(chunk => chunk.Length);
-			NativeList<VoxelVFX> buffer = new NativeList<VoxelVFX>(totalLength, Allocator.TempJob);
 
-			JobHandle computeRenderingChunkJob = new ComputeRenderingChunkJob()
+			if (RenderWithPathTracing)
 			{
-				Data = mChunksLoaded,
-				Buffer = buffer.AsParallelWriter(),
-				ChunkIndex = chunkIndex,
-			}.Schedule(totalActive, 64);
-			computeRenderingChunkJob.Complete();
-			chunkIndex.Dispose();
+				if (mVisualEffect != null)
+				{
+					Destroy(mVisualEffect.gameObject);
+					mVisualEffect = null;
+				}
 
-			if (buffer.Length > 0)
-			{
-				RefreshRender(buffer);
+				mGraphicsBuffer?.Release();
+				CustomFrameSettingsManager.Instance.SetRaytracingActive(true);
+				ManualRTASManager.Instance.Build();
 			}
+			else
+			{
+				int totalActive = Chunks.Count(chunk => chunk.IsActive == 1);
+				int totalLength = Chunks.Where(chunk => chunk.IsActive == 1).Sum(chunk => chunk.Length);
+				NativeList<VoxelVFX> buffer = new NativeList<VoxelVFX>(totalLength, Allocator.TempJob);
 
+				JobHandle computeRenderingChunkJob = new ComputeRenderingChunkJob()
+				{
+					Data = LoadedData,
+					Buffer = buffer.AsParallelWriter(),
+					ChunkIndex = chunkIndex,
+				}.Schedule(totalActive, 64);
+				computeRenderingChunkJob.Complete();
+
+				if (buffer.Length > 0)
+				{
+					RefreshVFXRender(buffer);
+				}
+
+				buffer.Dispose();
+			}
+			chunkIndex.Dispose();
 			mIsRenderFinished = true;
-			buffer.Dispose();
 		}
 
 		public void SetPlayerToWorldCenter()
@@ -422,60 +437,28 @@ namespace VoxToVFXFramework.Scripts.Managers
 			mVisualEffect.Play();
 		}
 
-		private void RefreshRender(NativeList<VoxelVFX> voxels)
+		private void RefreshVFXRender(NativeList<VoxelVFX> voxels)
 		{
-			if (RenderWithPathTracing)
+			if (mVisualEffect == null)
 			{
-
-				if (mVisualEffect != null)
-				{
-					Destroy(mVisualEffect.gameObject);
-					mVisualEffect = null;
-				}
-
-				mGraphicsBuffer?.Release();
-
-				CustomFrameSettingsManager.Instance.SetRaytracingActive(true);
-				LightManager.Instance.SetMainLightActive(true);
-
-				NativeParallelMultiHashMap<int, Matrix4x4> chunks = new NativeParallelMultiHashMap<int, Matrix4x4>(voxels.Length * 6, Allocator.TempJob);
-
-				JobHandle computePathTracingDataJob = new ComputePathTracingDataJob()
-				{
-					Data = voxels,
-					Chunks = Chunks,
-					MaterialAlpha = mMaterialAlpha,
-					Result = chunks.AsParallelWriter()
-				}.Schedule(voxels.Length, 64);
-				computePathTracingDataJob.Complete();
-
-				ManualRTASManager.Instance.Build(chunks);
-				chunks.Dispose();
+				mVisualEffect = Instantiate(VisualEffectItemPrefab);
+				mVisualEffect.enabled = true;
 			}
-			else
-			{
-				if (mVisualEffect == null)
-				{
-					mVisualEffect = Instantiate(VisualEffectItemPrefab);
-					mVisualEffect.enabled = true;
-				}
-				//mVisualEffect.visualEffectAsset = GetVisualEffectAsset(voxels.Length);
-				mVisualEffect.Reinit();
+			//mVisualEffect.visualEffectAsset = GetVisualEffectAsset(voxels.Length);
+			mVisualEffect.Reinit();
 
-				mGraphicsBuffer?.Release();
-				mGraphicsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, voxels.Length, Marshal.SizeOf(typeof(VoxelVFX)));
-				mGraphicsBuffer.SetData(voxels.AsArray());
+			mGraphicsBuffer?.Release();
+			mGraphicsBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, voxels.Length, Marshal.SizeOf(typeof(VoxelVFX)));
+			mGraphicsBuffer.SetData(voxels.AsArray());
 
-				mVisualEffect.SetInt(INITIAL_BURST_COUNT_KEY, voxels.Length);
-				mVisualEffect.SetGraphicsBuffer(VFX_BUFFER_KEY, mGraphicsBuffer);
-				mVisualEffect.SetGraphicsBuffer(MATERIAL_VFX_BUFFER_KEY, mPaletteBuffer);
-				mVisualEffect.SetGraphicsBuffer(CHUNK_VFX_BUFFER_KEY, mChunkBuffer);
-				mVisualEffect.SetFloat(EXPOSURE_WEIGHT_KEY, ExposureWeight.Value);
-				mVisualEffect.SetBool(DEBUG_LOD_KEY, DebugLod.Value);
+			mVisualEffect.SetInt(INITIAL_BURST_COUNT_KEY, voxels.Length);
+			mVisualEffect.SetGraphicsBuffer(VFX_BUFFER_KEY, mGraphicsBuffer);
+			mVisualEffect.SetGraphicsBuffer(MATERIAL_VFX_BUFFER_KEY, mPaletteBuffer);
+			mVisualEffect.SetGraphicsBuffer(CHUNK_VFX_BUFFER_KEY, mChunkBuffer);
+			mVisualEffect.SetFloat(EXPOSURE_WEIGHT_KEY, ExposureWeight.Value);
+			mVisualEffect.SetBool(DEBUG_LOD_KEY, DebugLod.Value);
 
-				mVisualEffect.Play();
-			}
-
+			mVisualEffect.Play();
 		}
 
 		//private VisualEffectAsset GetVisualEffectAsset(int voxelCount)

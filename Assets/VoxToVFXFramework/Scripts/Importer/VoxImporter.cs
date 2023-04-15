@@ -111,7 +111,7 @@ namespace VoxToVFXFramework.Scripts.Importer
 
 			onFinishedCallback?.Invoke(WorldData);
 		}
-		
+
 		private void OnReadVoxProgress(float progress, Action<float> onProgressCallback)
 		{
 			onProgressCallback?.Invoke(progress);

@@ -21,8 +21,7 @@ namespace VoxToVFXFramework.Scripts.Jobs
 		public void Execute(int index)
 		{
 			ChunkVFX chunkVFX = Chunks[index];
-			bool isVisible = TestPlanesAABB(Planes,
-				new Bounds(Chunks[index].CenterWorldPosition, Vector3.one * WorldData.CHUNK_SIZE));
+			bool isVisible = TestPlanesAABB(Planes, new Bounds(Chunks[index].CenterWorldPosition, Vector3.one * WorldData.CHUNK_SIZE));
 			float distance = math.distance(PlayerPosition, chunkVFX.CenterWorldPosition);
 
 			if (isVisible && distance < RenderDistance)
