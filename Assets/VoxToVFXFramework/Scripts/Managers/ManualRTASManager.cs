@@ -1,4 +1,6 @@
-﻿using Unity.Collections;
+﻿using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using UnityEngine;
@@ -18,17 +20,16 @@ namespace VoxToVFXFramework.Scripts.Managers
 
 		[SerializeField] private Mesh QuadMesh;
 		[SerializeField] private Mesh CubeMesh;
-
 		#endregion
 
 		#region ConstStatic
 
-		private const int MAX_INSTANCES_PER_CONFIG = 1048575;
 
 		#endregion
 
 		#region Fields
 
+		private Dictionary<int, List<int>> mHandleIds = new Dictionary<int, List<int>>();
 		private RayTracingAccelerationStructure mRtas;
 		private HDCamera mHdCamera;
 		private bool mRender;
@@ -86,29 +87,54 @@ namespace VoxToVFXFramework.Scripts.Managers
 			for (int index = 0; index < RuntimeVoxManager.Instance.Chunks.Length; index++)
 			{
 				ChunkVFX chunkVFX = RuntimeVoxManager.Instance.Chunks[index];
-				if (chunkVFX.IsActive == 0 && chunkVFX.PathTracingHandleId != 0)
+				if (chunkVFX.IsActive == 0 && mHandleIds.ContainsKey(index))
 				{
-					mRtas.RemoveInstance(chunkVFX.PathTracingHandleId);
-					chunkVFX.PathTracingHandleId = 0;
-					RuntimeVoxManager.Instance.Chunks[index] = chunkVFX;
+					foreach (int handleId in mHandleIds[index])
+					{
+						mRtas.RemoveInstance(handleId);
+					}
+
+					mHandleIds.Remove(index);
 				}
 
-				if (chunkVFX.IsActive == 1 && chunkVFX.PathTracingHandleId == 0)
+				if (chunkVFX.IsActive == 1 && !mHandleIds.ContainsKey(index))
 				{
 					UnsafeList<VoxelVFX> data = RuntimeVoxManager.Instance.LoadedData[index];
-					RayTracingMeshInstanceConfig config = new RayTracingMeshInstanceConfig(CubeMesh, 0, RuntimeVoxManager.Instance.Materials[0]);
-					NativeArray<Matrix4x4> result = new NativeArray<Matrix4x4>(data.Length, Allocator.TempJob);
+
+					NativeParallelMultiHashMap<int, Matrix4x4> positionResult = new NativeParallelMultiHashMap<int, Matrix4x4>(data.Length, Allocator.TempJob);
 					JobHandle computePathTracingData = new ComputePathTracingDataJob()
 					{
 						ChunkData = chunkVFX,
 						Data = data,
-						Result = result
+						PositionResult = positionResult.AsParallelWriter(),
 					}.Schedule(data.Length, 64);
 					computePathTracingData.Complete();
-					int handleId = mRtas.AddInstances(config, result);
-					chunkVFX.PathTracingHandleId = handleId;
-					RuntimeVoxManager.Instance.Chunks[index] = chunkVFX;
-					result.Dispose();
+
+					List<int> handleIds = new List<int>();
+					for (int i = 0; i < 255; i++)
+					{
+						if (!positionResult.ContainsKey(i)) continue;
+						RayTracingMeshInstanceConfig config = new RayTracingMeshInstanceConfig(CubeMesh, 0, RuntimeVoxManager.Instance.Materials[i]);
+
+						var enumerator = positionResult.GetValuesForKey(i);
+						NativeList<Matrix4x4> position = new NativeList<Matrix4x4>(Allocator.Temp);
+						while (enumerator.MoveNext())
+						{
+							position.Add(enumerator.Current);
+						}
+
+						if (position.Length > 0)
+						{
+							int handleId = mRtas.AddInstances(config, position.AsArray());
+							handleIds.Add(handleId);
+						}
+					}
+					
+					if (handleIds.Count > 0)
+					{
+						mHandleIds.Add(index, handleIds);
+					}
+					positionResult.Dispose();
 				}
 			}
 
@@ -120,7 +146,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			mRender = true;
 		}
 
-	
+
 
 		#endregion
 
@@ -131,8 +157,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			Debug.Log("[ManualRTASManager] ClearInstances");
 			mRtas.ClearInstances();
 			mRender = false;
-			//mRtas.Build(transform.position);
-
+			mHandleIds.Clear();
 			mHdCamera.rayTracingAccelerationStructure = null;
 		}
 

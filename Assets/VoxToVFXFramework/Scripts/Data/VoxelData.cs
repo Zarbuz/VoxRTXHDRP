@@ -38,7 +38,6 @@ namespace VoxToVFXFramework.Scripts.Data
 		public int LodLevel;
 		public int IsActive;
 		public int Length;
-		public int PathTracingHandleId;
 	}
 
 	public struct ChunkDataFile

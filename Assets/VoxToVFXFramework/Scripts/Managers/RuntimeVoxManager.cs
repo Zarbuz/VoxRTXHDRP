@@ -81,10 +81,9 @@ namespace VoxToVFXFramework.Scripts.Managers
 		public Wrapped<int> LodDistanceLod1 = new Wrapped<int>(600);
 		public Wrapped<int> ExposureWeight = new Wrapped<int>(-15);
 
-		[HideInInspector] public NativeArray<ChunkVFX> Chunks;
-		[HideInInspector] public UnsafeParallelHashMap<int, UnsafeList<VoxelVFX>> LoadedData;
+		public NativeArray<ChunkVFX> Chunks;
+		public UnsafeParallelHashMap<int, UnsafeList<VoxelVFX>> LoadedData;
 
-		private NativeArray<bool> mMaterialAlpha;
 		private Transform PlayerPosition => FreeCameraTransform;
 		private VisualEffect mVisualEffect;
 		private GraphicsBuffer mPaletteBuffer;
@@ -243,11 +242,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 				Chunks.Dispose();
 			}
 
-			if (mMaterialAlpha.IsCreated)
-			{
-				mMaterialAlpha.Dispose();
-			}
-
 			if (LoadedData.IsCreated)
 			{
 				//TODO Check this dispose
@@ -280,12 +274,10 @@ namespace VoxToVFXFramework.Scripts.Managers
 			mPaletteBuffer = new GraphicsBuffer(GraphicsBuffer.Target.Structured, materials.Length, Marshal.SizeOf(typeof(VoxelMaterialVFX)));
 			mPaletteBuffer.SetData(materials);
 
-			mMaterialAlpha = new NativeArray<bool>(materials.Length, Allocator.Persistent);
 			Materials = new Material[materials.Length];
 			for (int i = 0; i < materials.Length; i++)
 			{
 				VoxelMaterialVFX mat = materials[i];
-				mMaterialAlpha[i] = mat.alpha == 1;
 				if (mat.alpha == 1)
 				{
 					Materials[i] = new Material(OpaqueMaterial);

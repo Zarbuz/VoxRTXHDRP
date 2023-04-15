@@ -384,6 +384,7 @@ public class VoxelDataCreatorManager : ModuleSingleton<VoxelDataCreatorManager>
 				mMinZ = Mathf.Min(mMinZ, worldPositionZ);
 				mMaxZ = Mathf.Max(mMaxZ, worldPositionZ);
 			}
+
 		}
 
 		ChunkDataFile chunk = new ChunkDataFile

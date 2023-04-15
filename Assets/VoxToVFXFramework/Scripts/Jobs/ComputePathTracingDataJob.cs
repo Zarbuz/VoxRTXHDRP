@@ -14,8 +14,9 @@ namespace VoxToVFXFramework.Scripts.Jobs
 	{
 		[ReadOnly] public UnsafeList<VoxelVFX> Data;
 		[ReadOnly] public ChunkVFX ChunkData;
+
 		//[ReadOnly] public NativeArray<bool> MaterialAlpha;
-		public NativeArray<Matrix4x4> Result;
+		public NativeParallelMultiHashMap<int, Matrix4x4>.ParallelWriter PositionResult;
 		public void Execute(int index)
 		{
 			VoxelVFX voxel = Data[index];
@@ -24,13 +25,10 @@ namespace VoxToVFXFramework.Scripts.Jobs
 
 			Vector3 worldPosition = ChunkData.WorldPosition + new Vector3(decodedPosition.x, decodedPosition.y, decodedPosition.z);
 
-			//if (MaterialAlpha[colorIndex])
-			{
-				Matrix4x4 matrix = new Matrix4x4();
-				matrix.SetTRS(worldPosition, Quaternion.identity, Vector3.one * ChunkData.LodLevel);
-				Result[index] = matrix;
-				//Result.Add(colorIndex, matrix);
-			}
+			Matrix4x4 matrix = new Matrix4x4();
+			matrix.SetTRS(worldPosition, Quaternion.identity, Vector3.one * ChunkData.LodLevel);
+			PositionResult.Add(colorIndex, matrix);
+			//Result.Add(colorIndex, matrix);
 			//else
 			//{
 			//	float offset = 0.5f * chunk.LodLevel;
