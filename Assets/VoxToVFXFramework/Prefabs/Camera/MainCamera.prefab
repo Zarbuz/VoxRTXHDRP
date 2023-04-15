@@ -142,7 +142,7 @@ MonoBehaviour:
   xrRendering: 1
   fullscreenPassthrough: 0
   allowDynamicResolution: 1
-  customRenderingSettings: 1
+  customRenderingSettings: 0
   invertFaceCulling: 0
   probeLayerMask:
     serializedVersion: 2
@@ -283,7 +283,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9017514825924090541}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 02725b9a0bcb9de4e8a0f54df90e0ec7, type: 3}
   m_Name: 

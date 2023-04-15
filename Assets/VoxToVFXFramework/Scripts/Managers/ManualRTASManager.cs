@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -54,6 +55,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			if (Keyboard.current.oKey.wasPressedThisFrame && RuntimeVoxManager.Instance.RenderWithPathTracing)
 			{
 				DisablePathTracing();
+				return;
 			}
 
 			if (mRender)
@@ -71,7 +73,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			ClearInstances();
 			HDRenderPipeline renderPipeline = RenderPipelineManager.currentPipeline as HDRenderPipeline;
 			renderPipeline?.ResetPathTracing();
-			CustomFrameSettingsManager.Instance.SetRaytracingActive(false);
+			PostProcessingManager.Instance.SetPathTracing(false);
 			RuntimeVoxManager.Instance.RenderWithPathTracing = false;
 			RuntimeVoxManager.Instance.ForceRefreshRender = true;
 		}
@@ -155,10 +157,13 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private void ClearInstances()
 		{
 			Debug.Log("[ManualRTASManager] ClearInstances");
-			mRtas.ClearInstances();
-			mRender = false;
+			foreach (int handleId in mHandleIds.Values.SelectMany(handleIds => handleIds))
+			{
+				mRtas.RemoveInstance(handleId);
+			}
 			mHandleIds.Clear();
-			mHdCamera.rayTracingAccelerationStructure = null;
+			//mHdCamera.rayTracingAccelerationStructure = null;
+			mRender = false;
 		}
 
 

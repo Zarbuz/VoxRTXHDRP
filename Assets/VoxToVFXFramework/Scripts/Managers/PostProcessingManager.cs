@@ -71,6 +71,12 @@ namespace VoxToVFXFramework.Scripts.Managers
 			DepthOfField.focusMode = new DepthOfFieldModeParameter(DepthOfFieldMode.Manual);
 		}
 
+		public void SetPathTracing(bool active)
+		{
+			mVolume.profile.TryGet(typeof(PathTracing), out PathTracing pathTracing);
+			pathTracing.active = active;
+		}
+
 		#endregion
 
 		#region PrivateMethods

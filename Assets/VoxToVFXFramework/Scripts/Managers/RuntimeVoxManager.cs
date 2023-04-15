@@ -370,7 +370,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 				}
 
 				mGraphicsBuffer?.Release();
-				CustomFrameSettingsManager.Instance.SetRaytracingActive(true);
+				PostProcessingManager.Instance.SetPathTracing(true);
 				ManualRTASManager.Instance.Build();
 			}
 			else
