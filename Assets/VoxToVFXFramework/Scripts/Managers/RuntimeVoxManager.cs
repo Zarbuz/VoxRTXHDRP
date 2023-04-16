@@ -148,6 +148,7 @@ namespace VoxToVFXFramework.Scripts.Managers
 			if (Keyboard.current.rKey.wasPressedThisFrame && !RenderWithPathTracing && mIsRenderFinished)
 			{
 				RenderWithPathTracing = true;
+				ManualRTASManager.Instance.EnablePathTracing();
 				RefreshChunksToRender();
 				return;
 			}
@@ -345,6 +346,14 @@ namespace VoxToVFXFramework.Scripts.Managers
 			mIsRenderFinished = false;
 			mPlanes = GeometryUtility.CalculateFrustumPlanes(mCamera);
 
+			for (int i = 0; i < Chunks.Length; i++)
+			{
+				ChunkVFX chunkVFX = Chunks[i];
+				bool visible = GeometryUtility.TestPlanesAABB(mPlanes, new Bounds(chunkVFX.CenterWorldPosition, Vector3.one * WorldData.CHUNK_SIZE));
+				chunkVFX.IsVisible = visible ? 1 : 0;
+				Chunks[i] = chunkVFX;
+			}
+
 			NativeList<int> chunkIndex = new NativeList<int>(Chunks.Length, Allocator.TempJob);
 			int renderDistance = QualityManager.Instance.RenderDistance;
 			NativeArray<Plane> planes = new NativeArray<Plane>(mPlanes, Allocator.TempJob);
@@ -370,7 +379,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 				}
 
 				mGraphicsBuffer?.Release();
-				PostProcessingManager.Instance.SetPathTracing(true);
 				ManualRTASManager.Instance.Build();
 			}
 			else

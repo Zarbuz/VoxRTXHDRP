@@ -42,7 +42,6 @@ namespace VoxToVFXFramework.Scripts.Managers
 		protected override void OnStart()
 		{
 			mHdCamera = HDCamera.GetOrCreate(GetComponent<UnityEngine.Camera>());
-			mRtas = new RayTracingAccelerationStructure();
 		}
 
 		private void OnDestroy()
@@ -67,6 +66,12 @@ namespace VoxToVFXFramework.Scripts.Managers
 		#endregion
 
 		#region PublicMethods
+
+		public void EnablePathTracing()
+		{
+			mRtas = new RayTracingAccelerationStructure();
+			PostProcessingManager.Instance.SetPathTracing(true);
+		}
 
 		public void DisablePathTracing()
 		{
@@ -157,10 +162,9 @@ namespace VoxToVFXFramework.Scripts.Managers
 		private void ClearInstances()
 		{
 			Debug.Log("[ManualRTASManager] ClearInstances");
-			foreach (int handleId in mHandleIds.Values.SelectMany(handleIds => handleIds))
-			{
-				mRtas.RemoveInstance(handleId);
-			}
+			mRtas.ClearInstances();
+			mRtas.Build();
+			mRtas.Dispose();
 			mHandleIds.Clear();
 			//mHdCamera.rayTracingAccelerationStructure = null;
 			mRender = false;

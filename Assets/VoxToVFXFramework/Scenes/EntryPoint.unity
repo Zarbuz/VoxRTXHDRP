@@ -2491,11 +2491,6 @@ PrefabInstance:
       propertyPath: SkipFullReconnectEditor
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 264017584035478355, guid: e185c49bdd7463c43be3a65999488bc3,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4675473924365204788, guid: e185c49bdd7463c43be3a65999488bc3,
         type: 3}
       propertyPath: FreeCamera

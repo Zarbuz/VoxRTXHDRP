@@ -38,6 +38,7 @@ namespace VoxToVFXFramework.Scripts.Data
 		public int LodLevel;
 		public int IsActive;
 		public int Length;
+		public int IsVisible;
 	}
 
 	public struct ChunkDataFile

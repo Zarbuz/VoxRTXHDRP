@@ -41,7 +41,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 264017584035478354}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
@@ -387,8 +387,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VisualEffectItemPrefab: {fileID: 8845309807029738639, guid: 72f7859b0bd310b4f9a1c72d6ecd6ede,
     type: 3}
-  VFXListAsset: {fileID: 11400000, guid: 2ed9ae466d0ee4a46836973e8589c716, type: 2}
   ShowOnlyActiveChunkGizmos: 0
   FreeCameraTransform: {fileID: 0}
   TransparentMaterial: {fileID: 2100000, guid: ecfcc3ce4c1c5e940bf5eae1e941ff54, type: 2}
   OpaqueMaterial: {fileID: 2100000, guid: 87fb2a5d913d17840a985028e04493a7, type: 2}
+  Materials: []
